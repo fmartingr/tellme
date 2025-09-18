@@ -1,0 +1,77 @@
+/* Menu-Whisper - Spanish Localization */
+
+/* General */
+"app.name" = "Menu-Whisper";
+"general.ok" = "Aceptar";
+"general.cancel" = "Cancelar";
+"general.continue" = "Continuar";
+"general.settings" = "Configuración";
+"general.quit" = "Salir";
+
+/* Menu Bar */
+"menubar.idle" = "Inactivo";
+"menubar.listening" = "Escuchando";
+"menubar.processing" = "Procesando";
+"menubar.preferences" = "Preferencias...";
+"menubar.quit" = "Salir de Menu-Whisper";
+
+/* HUD States */
+"hud.listening" = "Escuchando...";
+"hud.processing" = "Transcribiendo...";
+"hud.cancel" = "Presiona Esc para cancelar";
+
+/* Permissions */
+"permissions.microphone.title" = "Acceso al Micrófono Requerido";
+"permissions.microphone.message" = "Menu-Whisper necesita acceso a tu micrófono para realizar la transcripción de voz a texto.";
+"permissions.accessibility.title" = "Acceso de Accesibilidad Requerido";
+"permissions.accessibility.message" = "Menu-Whisper necesita acceso de Accesibilidad para insertar texto transcrito en aplicaciones.";
+"permissions.input_monitoring.title" = "Monitoreo de Entrada Requerido";
+"permissions.input_monitoring.message" = "Menu-Whisper necesita acceso de Monitoreo de Entrada para registrar atajos de teclado globales.";
+"permissions.open_settings" = "Abrir Configuración del Sistema";
+
+/* Preferences Window */
+"preferences.title" = "Preferencias de Menu-Whisper";
+"preferences.general" = "General";
+"preferences.models" = "Modelos";
+"preferences.hotkeys" = "Atajos";
+"preferences.insertion" = "Inserción de Texto";
+"preferences.advanced" = "Avanzado";
+
+/* General Preferences */
+"preferences.general.hotkey" = "Atajo Global:";
+"preferences.general.mode" = "Modo de Activación:";
+"preferences.general.mode.push_to_talk" = "Presionar para hablar";
+"preferences.general.mode.toggle" = "Alternar";
+"preferences.general.sounds" = "Reproducir sonidos al iniciar/detener";
+"preferences.general.limit" = "Límite de tiempo de dictado (minutos):";
+
+/* Model Preferences */
+"preferences.models.title" = "Modelos de Reconocimiento de Voz";
+"preferences.models.active" = "Modelo Activo:";
+"preferences.models.language" = "Idioma:";
+"preferences.models.language.auto" = "Detección automática";
+"preferences.models.download" = "Descargar";
+"preferences.models.delete" = "Eliminar";
+"preferences.models.size" = "Tamaño:";
+"preferences.models.languages" = "Idiomas:";
+
+/* Insertion Preferences */
+"preferences.insertion.method" = "Método de Inserción:";
+"preferences.insertion.method.paste" = "Pegar (⌘V)";
+"preferences.insertion.method.type" = "Escribir caracteres";
+"preferences.insertion.preview" = "Mostrar vista previa antes de insertar";
+"preferences.insertion.secure_input" = "Entrada Segura Detectada";
+"preferences.insertion.secure_input.message" = "La inserción de texto está deshabilitada en contextos seguros. El texto se ha copiado al portapapeles.";
+
+/* Errors */
+"error.audio.failed" = "Error al acceder al micrófono";
+"error.model.not_found" = "Modelo de reconocimiento de voz no encontrado";
+"error.model.load_failed" = "Error al cargar el modelo de reconocimiento de voz";
+"error.transcription.failed" = "Error en la transcripción de voz";
+"error.download.failed" = "Error en la descarga del modelo";
+"error.download.verification_failed" = "Error en la verificación del modelo";
+
+/* Success Messages */
+"success.model.downloaded" = "Modelo descargado exitosamente";
+"success.settings.exported" = "Configuración exportada exitosamente";
+"success.settings.imported" = "Configuración importada exitosamente";

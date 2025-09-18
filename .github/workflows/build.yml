@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build Menu-Whisper
+    runs-on: macos-13
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Select Xcode version
+      run: sudo xcode-select -s /Applications/Xcode_15.0.app/Contents/Developer
+
+    - name: Show Xcode version
+      run: xcodebuild -version
+
+    - name: Show Swift version
+      run: swift --version
+
+    - name: Cache Swift Package Manager
+      uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+
+    - name: Build with Swift Package Manager
+      run: swift build -c release
+
+    - name: Run tests
+      run: swift test
+
+    - name: Check code formatting (SwiftFormat)
+      run: |
+        # Install SwiftFormat if available
+        if command -v swiftformat >/dev/null 2>&1; then
+          swiftformat --lint .
+        else
+          echo "SwiftFormat not available, skipping format check"
+        fi
+
+    - name: Run SwiftLint
+      run: |
+        # Install SwiftLint if available
+        if command -v swiftlint >/dev/null 2>&1; then
+          swiftlint
+        else
+          echo "SwiftLint not available, skipping lint check"
+        fi

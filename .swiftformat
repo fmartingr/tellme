@@ -1,0 +1,41 @@
+# SwiftFormat Configuration for Menu-Whisper
+
+# Indentation
+--indent 4
+--indentcase false
+--smarttabs enabled
+
+# Spacing
+--spaces 4
+--trailingspace ignore
+--semicolons never
+
+# Line breaks
+--maxwidth 120
+--linebreaks lf
+--wraparguments preserve
+--wraptypealiases preserve
+--wrapparameters preserve
+--wrapcollections preserve
+
+# Braces
+--allman false
+--elseposition same-line
+
+# Comments
+--stripunusedargs closure-only
+
+# Imports
+--importgrouping testable-bottom
+
+# Other formatting options
+--redundanttype inferred
+--closingparen balanced
+--commas inline
+--trimwhitespace always
+--insertlines enabled
+--removelines enabled
+--emptybraces no-space
+
+# Disable certain rules that conflict with team preferences
+--disable redundantSelf

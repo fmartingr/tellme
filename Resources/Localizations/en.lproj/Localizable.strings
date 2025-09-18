@@ -1,0 +1,77 @@
+/* Menu-Whisper - English Localization */
+
+/* General */
+"app.name" = "Menu-Whisper";
+"general.ok" = "OK";
+"general.cancel" = "Cancel";
+"general.continue" = "Continue";
+"general.settings" = "Settings";
+"general.quit" = "Quit";
+
+/* Menu Bar */
+"menubar.idle" = "Idle";
+"menubar.listening" = "Listening";
+"menubar.processing" = "Processing";
+"menubar.preferences" = "Preferences...";
+"menubar.quit" = "Quit Menu-Whisper";
+
+/* HUD States */
+"hud.listening" = "Listening...";
+"hud.processing" = "Transcribing...";
+"hud.cancel" = "Press Esc to cancel";
+
+/* Permissions */
+"permissions.microphone.title" = "Microphone Access Required";
+"permissions.microphone.message" = "Menu-Whisper needs access to your microphone to perform speech-to-text transcription.";
+"permissions.accessibility.title" = "Accessibility Access Required";
+"permissions.accessibility.message" = "Menu-Whisper needs Accessibility access to insert transcribed text into applications.";
+"permissions.input_monitoring.title" = "Input Monitoring Required";
+"permissions.input_monitoring.message" = "Menu-Whisper needs Input Monitoring access to register global hotkeys.";
+"permissions.open_settings" = "Open System Settings";
+
+/* Preferences Window */
+"preferences.title" = "Menu-Whisper Preferences";
+"preferences.general" = "General";
+"preferences.models" = "Models";
+"preferences.hotkeys" = "Hotkeys";
+"preferences.insertion" = "Text Insertion";
+"preferences.advanced" = "Advanced";
+
+/* General Preferences */
+"preferences.general.hotkey" = "Global Hotkey:";
+"preferences.general.mode" = "Activation Mode:";
+"preferences.general.mode.push_to_talk" = "Push-to-talk";
+"preferences.general.mode.toggle" = "Toggle";
+"preferences.general.sounds" = "Play sounds for start/stop";
+"preferences.general.limit" = "Dictation time limit (minutes):";
+
+/* Model Preferences */
+"preferences.models.title" = "Speech Recognition Models";
+"preferences.models.active" = "Active Model:";
+"preferences.models.language" = "Language:";
+"preferences.models.language.auto" = "Auto-detect";
+"preferences.models.download" = "Download";
+"preferences.models.delete" = "Delete";
+"preferences.models.size" = "Size:";
+"preferences.models.languages" = "Languages:";
+
+/* Insertion Preferences */
+"preferences.insertion.method" = "Insertion Method:";
+"preferences.insertion.method.paste" = "Paste (⌘V)";
+"preferences.insertion.method.type" = "Type characters";
+"preferences.insertion.preview" = "Show preview before inserting";
+"preferences.insertion.secure_input" = "Secure Input Detected";
+"preferences.insertion.secure_input.message" = "Text insertion is disabled in secure contexts. Text has been copied to clipboard.";
+
+/* Errors */
+"error.audio.failed" = "Failed to access microphone";
+"error.model.not_found" = "Speech recognition model not found";
+"error.model.load_failed" = "Failed to load speech recognition model";
+"error.transcription.failed" = "Speech transcription failed";
+"error.download.failed" = "Model download failed";
+"error.download.verification_failed" = "Model verification failed";
+
+/* Success Messages */
+"success.model.downloaded" = "Model downloaded successfully";
+"success.settings.exported" = "Settings exported successfully";
+"success.settings.imported" = "Settings imported successfully";
