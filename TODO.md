@@ -54,27 +54,27 @@ Conventions:
 **Goal:** Listening UX without real STT.
 
 ### Tasks
-- [ ] Implement **global hotkey** manager:
-  - [ ] Default **⌘⇧V** (configurable later).
-  - [ ] Support **push-to-talk** (start on key down, stop on key up).
-  - [ ] Support **toggle** (press to start, press to stop).
-- [ ] Create **HUD** as non-activating centered `NSPanel`:
-  - [ ] State **Listening** with **RMS/peak bars** animation (SwiftUI view).
-  - [ ] State **Processing** with spinner/label.
-  - [ ] Dismiss/cancel with **Esc**.
-- [ ] Implement **AVAudioEngine** capture:
-  - [ ] Tap on input bus; compute RMS/peak for visualization.
-  - [ ] Resample path ready for 16 kHz mono PCM (no STT yet).
-- [ ] Add dictation **time limit** (default **10 min**, configurable later).
-- [ ] Optional **sounds** for start/stop (toggle in settings later).
-- [ ] Permissions onboarding:
-  - [ ] Request **Microphone** permission with Info.plist string.
-  - [ ] Show guide for **Accessibility** and **Input Monitoring** (no hard gating yet).
+- [x] Implement **global hotkey** manager:
+  - [x] Default **⌘⇧V** (configurable later).
+  - [x] Support **push-to-talk** (start on key down, stop on key up).
+  - [x] Support **toggle** (press to start, press to stop).
+- [x] Create **HUD** as non-activating centered `NSPanel`:
+  - [x] State **Listening** with **RMS/peak bars** animation (SwiftUI view).
+  - [x] State **Processing** with spinner/label.
+  - [x] Dismiss/cancel with **Esc**.
+- [x] Implement **AVAudioEngine** capture:
+  - [x] Tap on input bus; compute RMS/peak for visualization.
+  - [x] Resample path ready for 16 kHz mono PCM (no STT yet).
+- [x] Add dictation **time limit** (default **10 min**, configurable later).
+- [x] Optional **sounds** for start/stop (toggle in settings later).
+- [x] Permissions onboarding:
+  - [x] Request **Microphone** permission with Info.plist string.
+  - [x] Show guide for **Accessibility** and **Input Monitoring** (no hard gating yet).
 
 ### AC
-- [ ] Hotkey works in both modes (push/toggle) across desktop & full-screen apps.
-- [ ] HUD appears centered; **Listening** shows live bars; **Processing** shows spinner.
-- [ ] Cancel (Esc) reliably stops listening and hides HUD.
+- [x] Hotkey works in both modes (push/toggle) across desktop & full-screen apps.
+- [x] HUD appears centered; **Listening** shows live bars; **Processing** shows spinner.
+- [x] Cancel (Esc) reliably stops listening and hides HUD.
 
 ---
 

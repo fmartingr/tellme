@@ -50,16 +50,58 @@ public class PermissionManager: ObservableObject {
         }
     }
 
+    public func requestMicrophonePermission(completion: @escaping (PermissionStatus) -> Void) {
+        logger.info("Requesting microphone permission")
+
+        switch AVCaptureDevice.authorizationStatus(for: .audio) {
+        case .authorized:
+            completion(.granted)
+        case .denied, .restricted:
+            completion(.denied)
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .audio) { granted in
+                let status: PermissionStatus = granted ? .granted : .denied
+                Task { @MainActor in
+                    self.microphoneStatus = status
+                }
+                completion(status)
+            }
+        @unknown default:
+            completion(.notDetermined)
+        }
+    }
+
     public func requestAccessibilityPermission() {
         logger.info("Requesting accessibility permission")
-        // TODO: Implement accessibility permission request in Phase 1
-        // This typically involves guiding the user to System Settings
+
+        if !AXIsProcessTrusted() {
+            logger.info("Accessibility permission not granted, opening System Settings")
+            openSystemSettings(for: .accessibility)
+        } else {
+            logger.info("Accessibility permission already granted")
+            accessibilityStatus = .granted
+        }
     }
 
     public func requestInputMonitoringPermission() {
         logger.info("Requesting input monitoring permission")
-        // TODO: Implement input monitoring permission request in Phase 1
-        // This typically involves guiding the user to System Settings
+
+        // For input monitoring, we can try to detect it by attempting to create a CGEvent
+        // If it fails, we likely need permission
+        let testEvent = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: true)
+
+        if testEvent == nil {
+            logger.info("Input monitoring permission likely not granted, opening System Settings")
+            openSystemSettings(for: .inputMonitoring)
+        } else {
+            logger.info("Input monitoring permission appears to be granted")
+            inputMonitoringStatus = .granted
+        }
+    }
+
+    public func checkAllPermissions() {
+        logger.info("Checking all permissions")
+        refreshAllPermissions()
     }
 
     public func openSystemSettings(for permission: PermissionType) {
@@ -100,12 +142,21 @@ public class PermissionManager: ObservableObject {
     }
 
     private func refreshAccessibilityPermission() {
-        // TODO: Implement accessibility permission check in Phase 1
-        accessibilityStatus = .notDetermined
+        if AXIsProcessTrusted() {
+            accessibilityStatus = .granted
+        } else {
+            accessibilityStatus = .denied
+        }
     }
 
     private func refreshInputMonitoringPermission() {
-        // TODO: Implement input monitoring permission check in Phase 1
-        inputMonitoringStatus = .notDetermined
+        // Test if we can create CGEvents (requires Input Monitoring permission)
+        let testEvent = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: true)
+
+        if testEvent != nil {
+            inputMonitoringStatus = .granted
+        } else {
+            inputMonitoringStatus = .denied
+        }
     }
 }
