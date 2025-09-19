@@ -1,64 +1,26 @@
 import SwiftUI
 import CoreUtils
 
+class AppDelegate: NSObject, NSApplicationDelegate {
+    private let appController = AppController()
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        appController.start()
+    }
+}
+
 @main
 struct MenuWhisperApp: App {
-    @StateObject private var appController = AppController()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        MenuBarExtra("Menu-Whisper", systemImage: "mic") {
-            MenuBarContentView()
-                .environmentObject(appController)
-                .onAppear {
-                    appController.start()
-                }
+        // Use a hidden window scene since we're using NSStatusItem for the menu bar
+        WindowGroup {
+            EmptyView()
         }
+        .windowStyle(.hiddenTitleBar)
+        .windowResizability(.contentSize)
+        .defaultSize(width: 0, height: 0)
     }
 }
 
-struct MenuBarContentView: View {
-    @EnvironmentObject var appController: AppController
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("Menu-Whisper")
-                .font(.headline)
-
-            Text(appController.currentState.displayName)
-                .font(.subheadline)
-                .foregroundColor(stateColor)
-
-            if appController.currentState == .listening {
-                Text("Press ⌘⇧V or Esc to stop")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-
-            Divider()
-
-            Button("Preferences...") {
-                // TODO: Open preferences window in Phase 4
-            }
-
-            Button("Quit") {
-                NSApplication.shared.terminate(nil)
-            }
-        }
-        .padding(.horizontal, 4)
-    }
-
-    private var stateColor: Color {
-        switch appController.currentState {
-        case .idle:
-            return .primary
-        case .listening:
-            return .blue
-        case .processing:
-            return .orange
-        case .injecting:
-            return .green
-        case .error:
-            return .red
-        }
-    }
-}

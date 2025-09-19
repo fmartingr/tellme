@@ -13,8 +13,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        // Add external dependencies here as needed
-        // Example: .package(url: "...", from: "1.0.0")
+        .package(url: "https://github.com/exPHAT/SwiftWhisper.git", branch: "master")
     ],
     targets: [
         // Main Application Target
@@ -31,7 +30,7 @@ let package = Package(
             ],
             path: "Sources/App",
             resources: [
-                .copy("../../Resources")
+                .copy("Resources")
             ]
         ),
 
@@ -44,7 +43,12 @@ let package = Package(
 
         .target(
             name: "CoreSTT",
-            dependencies: ["CoreUtils", "CoreModels", "MenuWhisperAudio"],
+            dependencies: [
+                "CoreUtils",
+                "CoreModels",
+                "MenuWhisperAudio",
+                .product(name: "SwiftWhisper", package: "SwiftWhisper")
+            ],
             path: "Sources/CoreSTT"
         ),
 
@@ -118,6 +122,12 @@ let package = Package(
             name: "CoreUtilsTests",
             dependencies: ["CoreUtils"],
             path: "Tests/CoreUtilsTests"
+        ),
+
+        .testTarget(
+            name: "IntegrationTests",
+            dependencies: ["CoreSTT", "CoreModels", "MenuWhisperAudio"],
+            path: "Tests/IntegrationTests"
         )
     ]
 )
