@@ -155,8 +155,10 @@ public class PermissionManager: ObservableObject {
 
         if testEvent != nil {
             inputMonitoringStatus = .granted
+            logger.debug("Input monitoring permission appears to be granted")
         } else {
             inputMonitoringStatus = .denied
+            logger.warning("Input monitoring permission appears to be denied")
         }
     }
 }

@@ -134,23 +134,41 @@ No automatic downloads - users must download and select models first.
 **Goal:** Insert text into focused app safely; handle Secure Input.
 
 ### Tasks
-- [ ] Implement **Paste** method:
-  - [ ] Put text on **NSPasteboard** (general).
-  - [ ] Send **⌘V** via CGEvent to focused app.
-- [ ] Implement **Typing** fallback:
-  - [ ] Generate per-character **CGEvent**; respect active keyboard layout.
-  - [ ] Handle `\n`, `\t`, and common unicode safely.
-- [ ] Detect **Secure Input**:
-  - [ ] Use `IsSecureEventInputEnabled()` (or accepted API) check before injection.
-  - [ ] If enabled: **do not inject**; keep text on clipboard; show non-blocking notice.
-- [ ] Add preference for **insertion method** (Paste preferred) + fallback strategy.
-- [ ] Add **Permissions** helpers for Accessibility/Input Monitoring (deep links).
-- [ ] Compatibility tests: Safari, Chrome, Notes, VS Code, Terminal, iTerm2, Mail.
+- [x] Implement **Paste** method:
+  - [x] Put text on **NSPasteboard** (general).
+  - [x] Send **⌘V** via CGEvent to focused app.
+- [x] Implement **Typing** fallback:
+  - [x] Generate per-character **CGEvent**; respect active keyboard layout.
+  - [x] Handle `\n`, `\t`, and common unicode safely.
+- [x] Detect **Secure Input**:
+  - [x] Use `IsSecureEventInputEnabled()` (or accepted API) check before injection.
+  - [x] If enabled: **do not inject**; keep text on clipboard; show non-blocking notice.
+- [x] Add preference for **insertion method** (Paste preferred) + fallback strategy.
+- [x] Add **Permissions** helpers for Accessibility/Input Monitoring (deep links).
+- [x] Compatibility tests: Safari, Chrome, Notes, VS Code, Terminal, iTerm2, Mail.
 
 ### AC
-- [ ] Text reliably appears in the currently focused app via Paste.
-- [ ] If Paste is blocked, Typing fallback works (except in Secure Input).
-- [ ] When **Secure Input** is active: no injection occurs; clipboard contains the text; user is informed.
+- [x] Text reliably appears in the currently focused app via Paste.
+- [x] If Paste is blocked, Typing fallback works (except in Secure Input).
+- [x] When **Secure Input** is active: no injection occurs; clipboard contains the text; user is informed.
+
+**Current Status:** Phase 3 **COMPLETE**.
+
+**What works:**
+- Full text injection implementation with paste method (NSPasteboard + ⌘V)
+- Typing fallback method with per-character CGEvent and Unicode support
+- Secure input detection using IsSecureEventInputEnabled()
+- Permission checking for Accessibility and Input Monitoring
+- Fallback strategy when primary method fails
+- Deep links to System Settings for permission setup
+- Error handling with appropriate user feedback
+
+**User Experience:**
+1. Text injection attempts paste method first (faster)
+2. Falls back to typing if paste fails
+3. Blocks injection if Secure Input is active (copies to clipboard instead)
+4. Guides users to grant required permissions
+5. Respects keyboard layout for character input
 
 ---
 

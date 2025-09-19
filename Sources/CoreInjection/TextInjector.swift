@@ -1,10 +1,21 @@
 import Foundation
 import AppKit
+import Carbon
 import CoreUtils
+import CorePermissions
 
-public enum InjectionMethod {
-    case paste
-    case typing
+public enum InjectionMethod: String, CaseIterable {
+    case paste = "paste"
+    case typing = "typing"
+
+    public var displayName: String {
+        switch self {
+        case .paste:
+            return NSLocalizedString("preferences.insertion.method.paste", comment: "Paste method")
+        case .typing:
+            return NSLocalizedString("preferences.insertion.method.typing", comment: "Typing method")
+        }
+    }
 }
 
 public enum InjectionError: Error, LocalizedError {
@@ -26,11 +37,17 @@ public enum InjectionError: Error, LocalizedError {
 
 public class TextInjector {
     private let logger = Logger(category: "TextInjector")
+    private let permissionManager: PermissionManager
 
-    public init() {}
+    public init(permissionManager: PermissionManager? = nil) {
+        self.permissionManager = permissionManager ?? PermissionManager()
+    }
 
-    public func injectText(_ text: String, method: InjectionMethod = .paste) throws {
-        logger.info("Injecting text using method: \(method)")
+    public func injectText(_ text: String, method: InjectionMethod = .paste, enableFallback: Bool = true) throws {
+        logger.info("Injecting text using method: \(method), fallback enabled: \(enableFallback)")
+
+        // Check permissions required for text injection
+        try checkRequiredPermissions()
 
         // Check for secure input first
         if isSecureInputActive() {
@@ -39,6 +56,41 @@ public class TextInjector {
             throw InjectionError.secureInputActive
         }
 
+        do {
+            try attemptInjection(text: text, method: method)
+        } catch {
+            if enableFallback {
+                let fallbackMethod: InjectionMethod = method == .paste ? .typing : .paste
+                logger.warning("Primary injection method failed, trying fallback: \(fallbackMethod)")
+                try attemptInjection(text: text, method: fallbackMethod)
+            } else {
+                throw error
+            }
+        }
+    }
+
+    private func checkRequiredPermissions() throws {
+        // Refresh permission status first
+        permissionManager.checkAllPermissions()
+
+        logger.info("Permission status - Accessibility: \(permissionManager.accessibilityStatus), Input Monitoring: \(permissionManager.inputMonitoringStatus)")
+
+        // Check accessibility permission (required for text injection)
+        if permissionManager.accessibilityStatus != .granted {
+            logger.error("Accessibility permission not granted: \(permissionManager.accessibilityStatus)")
+            throw InjectionError.accessibilityPermissionRequired
+        }
+
+        // Check input monitoring permission (required for CGEvent creation)
+        if permissionManager.inputMonitoringStatus != .granted {
+            logger.error("Input monitoring permission not granted: \(permissionManager.inputMonitoringStatus)")
+            throw InjectionError.accessibilityPermissionRequired // Using same error for simplicity
+        }
+
+        logger.info("All permissions granted for text injection")
+    }
+
+    private func attemptInjection(text: String, method: InjectionMethod) throws {
         switch method {
         case .paste:
             try injectViaPaste(text)
@@ -49,25 +101,115 @@ public class TextInjector {
 
     private func injectViaPaste(_ text: String) throws {
         logger.debug("Injecting text via paste method")
-        // TODO: Implement paste injection (clipboard + ⌘V) in Phase 3
+
+        // First copy text to clipboard
         copyToClipboard(text)
-        // TODO: Send ⌘V via CGEvent
+
+        // Small delay to ensure clipboard is updated
+        Thread.sleep(forTimeInterval: 0.05)
+
+        // Send ⌘V via CGEvent
+        try sendCommandV()
+    }
+
+    private func sendCommandV() throws {
+        logger.debug("Sending ⌘V keyboard event")
+
+        // Create ⌘V key combination
+        let cmdDownEvent = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(kVK_ANSI_V), keyDown: true)
+        let cmdUpEvent = CGEvent(keyboardEventSource: nil, virtualKey: CGKeyCode(kVK_ANSI_V), keyDown: false)
+
+        guard let cmdDown = cmdDownEvent, let cmdUp = cmdUpEvent else {
+            logger.error("Failed to create CGEvent objects for ⌘V")
+            throw InjectionError.injectionFailed("Failed to create CGEvent for ⌘V")
+        }
+
+        // Set command modifier for both events
+        cmdDown.flags = .maskCommand
+        cmdUp.flags = .maskCommand
+
+        logger.debug("Created ⌘V events, posting to system...")
+
+        // Post the events
+        cmdDown.post(tap: .cghidEventTap)
+        cmdUp.post(tap: .cghidEventTap)
+
+        logger.info("⌘V events posted successfully")
     }
 
     private func injectViaTyping(_ text: String) throws {
         logger.debug("Injecting text via typing method")
-        // TODO: Implement character-by-character typing via CGEvent in Phase 3
+
+        for character in text {
+            try typeCharacter(character)
+            // Small delay between characters to avoid overwhelming the target app
+            Thread.sleep(forTimeInterval: 0.01)
+        }
+
+        logger.debug("Typing injection completed")
+    }
+
+    private func typeCharacter(_ character: Character) throws {
+        let string = String(character)
+
+        // Handle common special characters
+        switch character {
+        case "\n":
+            try postKeyEvent(keyCode: CGKeyCode(kVK_Return))
+        case "\t":
+            try postKeyEvent(keyCode: CGKeyCode(kVK_Tab))
+        case " ":
+            try postKeyEvent(keyCode: CGKeyCode(kVK_Space))
+        default:
+            // Use CGEvent string posting for regular characters
+            // This respects the current keyboard layout
+            let keyDownEvent = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: true)
+            let keyUpEvent = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: false)
+
+            guard let keyDown = keyDownEvent, let keyUp = keyUpEvent else {
+                throw InjectionError.injectionFailed("Failed to create CGEvent for character: \(character)")
+            }
+
+            // Set the Unicode string for the character
+            let unicodeChars = string.unicodeScalars.map { UniChar($0.value) }
+            keyDown.keyboardSetUnicodeString(stringLength: string.count, unicodeString: unicodeChars)
+            keyUp.keyboardSetUnicodeString(stringLength: string.count, unicodeString: unicodeChars)
+
+            // Post the events
+            keyDown.post(tap: .cghidEventTap)
+            keyUp.post(tap: .cghidEventTap)
+        }
+    }
+
+    private func postKeyEvent(keyCode: CGKeyCode) throws {
+        let keyDownEvent = CGEvent(keyboardEventSource: nil, virtualKey: keyCode, keyDown: true)
+        let keyUpEvent = CGEvent(keyboardEventSource: nil, virtualKey: keyCode, keyDown: false)
+
+        guard let keyDown = keyDownEvent, let keyUp = keyUpEvent else {
+            throw InjectionError.injectionFailed("Failed to create CGEvent for key code: \(keyCode)")
+        }
+
+        keyDown.post(tap: .cghidEventTap)
+        keyUp.post(tap: .cghidEventTap)
     }
 
     private func copyToClipboard(_ text: String) {
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
-        pasteboard.setString(text, forType: .string)
-        logger.debug("Text copied to clipboard")
+        let success = pasteboard.setString(text, forType: .string)
+
+        if success {
+            logger.info("Text copied to clipboard: \"\(text)\"")
+        } else {
+            logger.error("Failed to copy text to clipboard")
+        }
     }
 
     private func isSecureInputActive() -> Bool {
-        // TODO: Implement IsSecureEventInputEnabled() check in Phase 3
-        return false
+        let isSecure = IsSecureEventInputEnabled()
+        if isSecure {
+            logger.warning("Secure input is active - text injection will be blocked")
+        }
+        return isSecure
     }
 }

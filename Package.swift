@@ -60,7 +60,7 @@ let package = Package(
 
         .target(
             name: "CoreInjection",
-            dependencies: ["CoreUtils"],
+            dependencies: ["CoreUtils", "CorePermissions"],
             path: "Sources/CoreInjection"
         ),
 

@@ -4,6 +4,7 @@ import MenuWhisperAudio
 import CorePermissions
 import CoreSTT
 import CoreModels
+import CoreInjection
 import AVFoundation
 
 public class AppController: ObservableObject {
@@ -14,6 +15,7 @@ public class AppController: ObservableObject {
     private let audioEngine = AudioEngine()
     private let permissionManager = PermissionManager()
     private let soundManager = SoundManager()
+    private let textInjector: TextInjector
 
     // STT components
     public let whisperEngine = WhisperCPPEngine(numThreads: 4, useGPU: true)
@@ -33,6 +35,7 @@ public class AppController: ObservableObject {
     private let maxDictationDuration: TimeInterval = 600 // 10 minutes default
 
     public init() {
+        textInjector = TextInjector(permissionManager: permissionManager)
         setupDelegates()
         setupNotifications()
         setupSTTComponents()
@@ -91,6 +94,9 @@ public class AppController: ObservableObject {
             setupStatusItemMenu()
         }
 
+        // Check all required permissions on startup
+        checkAllPermissionsOnStartup()
+
         // Check microphone permission first
         checkMicrophonePermission { [weak self] granted in
             if granted {
@@ -129,12 +135,6 @@ public class AppController: ObservableObject {
         let preferencesMenuItem = NSMenuItem(title: "Preferences...", action: #selector(openPreferences), keyEquivalent: ",")
         preferencesMenuItem.target = self
         menu.addItem(preferencesMenuItem)
-
-        // Test item - add direct preferences shortcut
-        let testPrefsMenuItem = NSMenuItem(title: "Open Preferences (⇧⌘P)", action: #selector(openPreferences), keyEquivalent: "P")
-        testPrefsMenuItem.keyEquivalentModifierMask = [.shift, .command]
-        testPrefsMenuItem.target = self
-        menu.addItem(testPrefsMenuItem)
 
         // Quit
         let quitMenuItem = NSMenuItem(title: "Quit MenuWhisper", action: #selector(quitApp), keyEquivalent: "q")
@@ -189,6 +189,54 @@ public class AppController: ObservableObject {
 
     private func setupHotkey() {
         hotkeyManager.enableHotkey()
+    }
+
+    private func checkAllPermissionsOnStartup() {
+        logger.info("Checking all permissions on startup")
+
+        // Check all permissions and log their status
+        permissionManager.checkAllPermissions()
+
+        // Log permission status
+        logger.info("Permission status: Microphone=\(permissionManager.microphoneStatus), Accessibility=\(permissionManager.accessibilityStatus), InputMonitoring=\(permissionManager.inputMonitoringStatus)")
+
+        // Check if we need to show permission onboarding for first-time users
+        if shouldShowPermissionOnboarding() {
+            Task { @MainActor in
+                showPermissionOnboarding()
+            }
+        }
+    }
+
+
+    private func shouldShowPermissionOnboarding() -> Bool {
+        // Don't show again if user already dismissed it
+        if UserDefaults.standard.bool(forKey: "hasShownPermissionOnboarding") {
+            return false
+        }
+
+        // Show onboarding if any critical permissions are not granted
+        return permissionManager.accessibilityStatus != .granted ||
+               permissionManager.inputMonitoringStatus != .granted
+    }
+
+    @MainActor
+    private func showPermissionOnboarding() {
+        let alert = NSAlert()
+        alert.messageText = "Welcome to MenuWhisper"
+        alert.informativeText = "MenuWhisper needs some permissions to work properly:\n\n• Microphone: To capture your speech\n• Accessibility: To insert transcribed text\n• Input Monitoring: To send keyboard events\n\nWould you like to set up permissions now?"
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Set Up Permissions")
+        alert.addButton(withTitle: "Later")
+
+        let response = alert.runModal()
+
+        // Mark that we've shown the onboarding
+        UserDefaults.standard.set(true, forKey: "hasShownPermissionOnboarding")
+
+        if response == .alertFirstButtonReturn {
+            showPreferences(initialTab: 1) // Open Permissions tab
+        }
     }
 
     private func checkMicrophonePermission(completion: @escaping (Bool) -> Void) {
@@ -281,10 +329,9 @@ public class AppController: ObservableObject {
 
                 logger.info("Transcription completed in \(String(format: "%.2f", duration))s: \"\(transcription)\"")
 
-                // For now, just print the result - in Phase 3 we'll inject it
+                // Inject the transcribed text
                 await MainActor.run {
-                    print("🎤 TRANSCRIPTION RESULT: \(transcription)")
-                    showTranscriptionResult(transcription)
+                    injectTranscriptionResult(transcription)
                 }
 
             } catch {
@@ -295,11 +342,32 @@ public class AppController: ObservableObject {
     }
 
     @MainActor
-    private func showTranscriptionResult(_ text: String) {
-        // For Phase 2, we'll just show it in logs and console
-        // In Phase 3, this will inject the text into the active app
-        logger.info("Transcription result: \(text)")
-        finishProcessing()
+    private func injectTranscriptionResult(_ text: String) {
+        logger.info("Attempting to inject transcription result: \(text)")
+
+        do {
+            // Attempt to inject the text using paste method with fallback enabled
+            try textInjector.injectText(text, method: .paste, enableFallback: true)
+            logger.info("Text injection successful")
+
+            // Show success and finish processing
+            finishProcessing()
+
+        } catch InjectionError.secureInputActive {
+            logger.warning("Secure input active - text copied to clipboard")
+            showSecureInputNotice(text)
+            finishProcessing()
+
+        } catch InjectionError.accessibilityPermissionRequired {
+            logger.error("Accessibility permission required for text injection")
+            showPermissionRequiredNotice()
+            finishProcessing()
+
+        } catch {
+            logger.error("Text injection failed: \(error)")
+            showInjectionError(error.localizedDescription)
+            finishProcessing()
+        }
     }
 
     @MainActor
@@ -364,7 +432,42 @@ public class AppController: ObservableObject {
     }
 
     @MainActor
-    public func showPreferences() {
+    private func showSecureInputNotice(_ text: String) {
+        let alert = NSAlert()
+        alert.messageText = "Secure Input Active"
+        alert.informativeText = "Text injection is blocked because secure input is active (likely in a password field or secure app).\n\nThe transcribed text has been copied to your clipboard instead: \"\(text)\""
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+
+    @MainActor
+    private func showPermissionRequiredNotice() {
+        let alert = NSAlert()
+        alert.messageText = "Permission Required"
+        alert.informativeText = "MenuWhisper needs Accessibility and Input Monitoring permissions to insert text into other applications.\n\nWould you like to open System Settings to grant these permissions?"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "Open System Settings")
+        alert.addButton(withTitle: "Cancel")
+
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
+            showPreferences(initialTab: 1) // Open Permissions tab
+        }
+    }
+
+    @MainActor
+    private func showInjectionError(_ message: String) {
+        let alert = NSAlert()
+        alert.messageText = "Text Injection Failed"
+        alert.informativeText = "Failed to insert the transcribed text: \(message)"
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+
+    @MainActor
+    public func showPreferences(initialTab: Int = 0) {
         guard let modelManager = modelManager else {
             logger.error("ModelManager not initialized yet")
             return
@@ -373,8 +476,13 @@ public class AppController: ObservableObject {
         if preferencesWindow == nil {
             preferencesWindow = PreferencesWindowController(
                 modelManager: modelManager,
-                whisperEngine: whisperEngine
+                whisperEngine: whisperEngine,
+                permissionManager: permissionManager,
+                initialTab: initialTab
             )
+        } else {
+            // If window already exists, update the selected tab
+            preferencesWindow?.setSelectedTab(initialTab)
         }
 
         preferencesWindow?.showWindow(nil)

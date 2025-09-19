@@ -2,14 +2,18 @@ import SwiftUI
 import CoreModels
 import CoreSTT
 import CoreUtils
+import CorePermissions
 
 class PreferencesWindowController: NSWindowController {
     private let modelManager: ModelManager
     private let whisperEngine: WhisperCPPEngine
+    private let permissionManager: PermissionManager
+    private var preferencesView: PreferencesView?
 
-    init(modelManager: ModelManager, whisperEngine: WhisperCPPEngine) {
+    init(modelManager: ModelManager, whisperEngine: WhisperCPPEngine, permissionManager: PermissionManager, initialTab: Int = 0) {
         self.modelManager = modelManager
         self.whisperEngine = whisperEngine
+        self.permissionManager = permissionManager
 
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 600, height: 500),
@@ -22,32 +26,52 @@ class PreferencesWindowController: NSWindowController {
 
         window.title = "MenuWhisper Preferences"
         window.center()
-        window.contentView = NSHostingView(
-            rootView: PreferencesView(
-                modelManager: modelManager,
-                whisperEngine: whisperEngine,
-                onClose: { [weak self] in
-                    self?.close()
-                }
-            )
+
+        preferencesView = PreferencesView(
+            modelManager: modelManager,
+            whisperEngine: whisperEngine,
+            permissionManager: permissionManager,
+            initialTab: initialTab,
+            onClose: { [weak self] in
+                self?.close()
+            }
         )
+
+        window.contentView = NSHostingView(rootView: preferencesView!)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func setSelectedTab(_ tabIndex: Int) {
+        preferencesView?.setSelectedTab(tabIndex)
     }
 }
 
 struct PreferencesView: View {
     @ObservedObject var modelManager: ModelManager
     let whisperEngine: WhisperCPPEngine
+    @ObservedObject var permissionManager: PermissionManager
     let onClose: () -> Void
 
-    @State private var selectedTab = 0
+    @State private var selectedTab: Int
     @State private var isDownloading: [String: Bool] = [:]
     @State private var downloadProgress: [String: Double] = [:]
     @State private var showingDeleteAlert = false
     @State private var modelToDelete: ModelInfo?
+
+    init(modelManager: ModelManager, whisperEngine: WhisperCPPEngine, permissionManager: PermissionManager, initialTab: Int = 0, onClose: @escaping () -> Void) {
+        self.modelManager = modelManager
+        self.whisperEngine = whisperEngine
+        self.permissionManager = permissionManager
+        self.onClose = onClose
+        self._selectedTab = State(initialValue: initialTab)
+    }
+
+    func setSelectedTab(_ tabIndex: Int) {
+        selectedTab = tabIndex
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -64,11 +88,17 @@ struct PreferencesView: View {
             }
             .tag(0)
 
+            PermissionsTab(permissionManager: permissionManager)
+                .tabItem {
+                    Label("Permissions", systemImage: "lock.shield")
+                }
+                .tag(1)
+
             GeneralTab()
                 .tabItem {
                     Label("General", systemImage: "gearshape")
                 }
-                .tag(1)
+                .tag(2)
         }
         .frame(width: 600, height: 500)
         .alert("Delete Model", isPresented: $showingDeleteAlert) {
@@ -321,6 +351,173 @@ struct ModelRow: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(isActive ? Color.blue : Color.clear, lineWidth: 2)
         )
+    }
+}
+
+struct PermissionsTab: View {
+    @ObservedObject var permissionManager: PermissionManager
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Permissions")
+                .font(.title2)
+                .fontWeight(.semibold)
+
+            Text("MenuWhisper requires certain system permissions to function properly. Click the buttons below to grant permissions in System Settings.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            VStack(alignment: .leading, spacing: 12) {
+                // Microphone Permission
+                PermissionRow(
+                    title: "Microphone",
+                    description: "Required to capture speech for transcription",
+                    status: permissionManager.microphoneStatus,
+                    onOpenSettings: {
+                        permissionManager.openSystemSettings(for: .microphone)
+                    },
+                    onRefresh: {
+                        permissionManager.checkAllPermissions()
+                    }
+                )
+
+                Divider()
+
+                // Accessibility Permission
+                PermissionRow(
+                    title: "Accessibility",
+                    description: "Required to insert transcribed text into other applications",
+                    status: permissionManager.accessibilityStatus,
+                    onOpenSettings: {
+                        permissionManager.openSystemSettings(for: .accessibility)
+                    },
+                    onRefresh: {
+                        permissionManager.checkAllPermissions()
+                    }
+                )
+
+                Divider()
+
+                // Input Monitoring Permission
+                PermissionRow(
+                    title: "Input Monitoring",
+                    description: "Required to send keyboard events for text insertion",
+                    status: permissionManager.inputMonitoringStatus,
+                    onOpenSettings: {
+                        permissionManager.openSystemSettings(for: .inputMonitoring)
+                    },
+                    onRefresh: {
+                        permissionManager.checkAllPermissions()
+                    }
+                )
+            }
+            .padding(16)
+            .background(Color(NSColor.controlBackgroundColor))
+            .cornerRadius(12)
+
+            // Help text
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Need Help?")
+                    .font(.headline)
+
+                Text("After granting permissions in System Settings:")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("1. Close System Settings")
+                    Text("2. Click 'Refresh Status' to update permission status")
+                    Text("3. Some permissions may require restarting MenuWhisper")
+                }
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.leading, 8)
+            }
+
+            Spacer()
+        }
+        .padding(20)
+    }
+}
+
+struct PermissionRow: View {
+    let title: String
+    let description: String
+    let status: PermissionStatus
+    let onOpenSettings: () -> Void
+    let onRefresh: () -> Void
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text(title)
+                        .font(.body)
+                        .fontWeight(.medium)
+
+                    Spacer()
+
+                    // Status indicator
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(statusColor)
+                            .frame(width: 8, height: 8)
+
+                        Text(statusText)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(statusColor)
+                    }
+                }
+
+                Text(description)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            Spacer()
+
+            VStack(spacing: 6) {
+                if status != .granted {
+                    Button("Open System Settings") {
+                        onOpenSettings()
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                }
+
+                Button("Refresh Status") {
+                    onRefresh()
+                }
+                .buttonStyle(.borderless)
+                .controlSize(.small)
+                .foregroundColor(.secondary)
+            }
+        }
+    }
+
+    private var statusColor: Color {
+        switch status {
+        case .granted:
+            return .green
+        case .denied:
+            return .red
+        case .notDetermined, .restricted:
+            return .orange
+        }
+    }
+
+    private var statusText: String {
+        switch status {
+        case .granted:
+            return "Granted"
+        case .denied:
+            return "Denied"
+        case .notDetermined:
+            return "Not Set"
+        case .restricted:
+            return "Restricted"
+        }
     }
 }
 
