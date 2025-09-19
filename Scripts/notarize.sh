@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Notarization script for Menu-Whisper
+# Notarization script for Tell me
 # This is a placeholder script that will be completed in Phase 5
 
 set -e
 
-echo "🍎 Menu-Whisper Notarization Script"
+echo "🍎 Tell me Notarization Script"
 echo "📋 This script will handle code signing and notarization for distribution"
 echo ""
 echo "⚠️  This is a placeholder script - implementation pending Phase 5"

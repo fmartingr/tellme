@@ -1,10 +1,10 @@
-# Menu-Whisper
+# Tell me
 
 A macOS menu bar application that provides offline speech-to-text transcription using Whisper-family models and automatically inserts the transcribed text into the currently focused application.
 
 ## Overview
 
-Menu-Whisper is designed to be a privacy-focused, offline-first speech recognition tool for macOS. It runs entirely locally on Apple Silicon machines, requiring no internet connection during normal operation (only for initial model downloads).
+Tell me is designed to be a privacy-focused, offline-first speech recognition tool for macOS. It runs entirely locally on Apple Silicon machines, requiring no internet connection during normal operation (only for initial model downloads).
 
 ### Key Features
 

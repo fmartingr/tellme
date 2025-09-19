@@ -26,7 +26,7 @@ public struct ModelInfo: Codable, Identifiable {
 
     public var fileURL: URL {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let modelsDirectory = appSupport.appendingPathComponent("MenuWhisper/Models")
+        let modelsDirectory = appSupport.appendingPathComponent("TellMe/Models")
         return modelsDirectory.appendingPathComponent(filename)
     }
 
@@ -102,7 +102,7 @@ public enum ModelError: Error, LocalizedError {
 }
 
 @MainActor
-public class ModelManager: ObservableObject {
+public class ModelManager: NSObject, ObservableObject {
     private let logger = Logger(category: "ModelManager")
 
     @Published public private(set) var availableModels: [ModelInfo] = []
@@ -111,18 +111,21 @@ public class ModelManager: ObservableObject {
     @Published public private(set) var downloadProgress: [String: DownloadProgress] = [:]
 
     private let modelsDirectory: URL
-    private let urlSession: URLSession
+    private var urlSession: URLSession
     private var downloadTasks: [String: URLSessionDownloadTask] = [:]
+    private var progressCallbacks: [String: (DownloadProgress) -> Void] = [:]
 
-    public init() {
+    public override init() {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        modelsDirectory = appSupport.appendingPathComponent("MenuWhisper/Models")
+        modelsDirectory = appSupport.appendingPathComponent("TellMe/Models")
 
-        // Configure URLSession for downloads
+        // Configure URLSession for downloads (simple session, delegates created per download)
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 30
         config.timeoutIntervalForResource = 3600 // 1 hour for large model downloads
         urlSession = URLSession(configuration: config)
+
+        super.init()
 
         try? FileManager.default.createDirectory(at: modelsDirectory, withIntermediateDirectories: true)
 
@@ -172,35 +175,34 @@ public class ModelManager: ObservableObject {
             throw ModelError.downloadFailed("Invalid download URL")
         }
 
-        // Create temporary file for download
-        let tempURL = modelsDirectory.appendingPathComponent("\(model.name).tmp")
+        let modelName = model.name
+        let modelSHA256 = model.sha256
+        let modelFileURL = model.fileURL
 
-        do {
-            let (tempFileURL, response) = try await urlSession.download(from: url)
+        print("Starting download for \(modelName) from \(url)")
 
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200..<300).contains(httpResponse.statusCode) else {
-                throw ModelError.downloadFailed("HTTP error: \(String(describing: (response as? HTTPURLResponse)?.statusCode))")
-            }
+        // Use simple URLSession download for reliability (progress spinners don't need exact progress)
+        let (tempURL, response) = try await urlSession.download(from: url)
 
-            // Verify SHA256 checksum if provided
-            if !model.sha256.isEmpty {
-                try await verifyChecksum(fileURL: tempFileURL, expectedSHA256: model.sha256)
-            }
-
-            // Move to final location
-            if FileManager.default.fileExists(atPath: model.fileURL.path) {
-                try FileManager.default.removeItem(at: model.fileURL)
-            }
-
-            try FileManager.default.moveItem(at: tempFileURL, to: model.fileURL)
-            logger.info("Model file \(model.name).bin downloaded successfully")
-
-        } catch {
-            // Clean up temp files on error
-            try? FileManager.default.removeItem(at: tempURL)
-            throw ModelError.downloadFailed(error.localizedDescription)
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200..<300).contains(httpResponse.statusCode) else {
+            throw ModelError.downloadFailed("HTTP error: \(String(describing: (response as? HTTPURLResponse)?.statusCode))")
         }
+
+        print("Download completed for \(modelName)")
+
+        // Verify SHA256 checksum if provided
+        if !modelSHA256.isEmpty {
+            try await verifyChecksum(fileURL: tempURL, expectedSHA256: modelSHA256)
+        }
+
+        // Move to final location
+        if FileManager.default.fileExists(atPath: modelFileURL.path) {
+            try FileManager.default.removeItem(at: modelFileURL)
+        }
+
+        try FileManager.default.moveItem(at: tempURL, to: modelFileURL)
+        logger.info("Model file \(modelName).bin downloaded successfully")
     }
 
     private func downloadCoreMlEncoder(_ model: ModelInfo) async throws {
@@ -402,14 +404,14 @@ public class ModelManager: ObservableObject {
 
     private func saveActiveModelPreference() {
         if let activeModel = activeModel {
-            UserDefaults.standard.set(activeModel.name, forKey: "MenuWhisper.ActiveModel")
+            UserDefaults.standard.set(activeModel.name, forKey: "TellMe.ActiveModel")
         } else {
-            UserDefaults.standard.removeObject(forKey: "MenuWhisper.ActiveModel")
+            UserDefaults.standard.removeObject(forKey: "TellMe.ActiveModel")
         }
     }
 
     private func loadActiveModelPreference() {
-        guard let modelName = UserDefaults.standard.string(forKey: "MenuWhisper.ActiveModel") else {
+        guard let modelName = UserDefaults.standard.string(forKey: "TellMe.ActiveModel") else {
             return
         }
 
@@ -417,7 +419,8 @@ public class ModelManager: ObservableObject {
 
         if activeModel == nil {
             // Clear preference if model is no longer available or downloaded
-            UserDefaults.standard.removeObject(forKey: "MenuWhisper.ActiveModel")
+            UserDefaults.standard.removeObject(forKey: "TellMe.ActiveModel")
         }
     }
 }
+

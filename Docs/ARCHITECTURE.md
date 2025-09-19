@@ -71,7 +71,7 @@ Menu-Whisper follows a modular architecture with clear separation of concerns be
 - Curated model catalog (JSON-based)
 - Download management with progress tracking
 - SHA256 verification and integrity checks
-- Local storage in `~/Library/Application Support/MenuWhisper/Models`
+- Local storage in `~/Library/Application Support/TellMe/Models`
 - Model selection and metadata management
 
 #### Core/Injection
@@ -185,7 +185,7 @@ The application follows a finite state machine pattern:
 The project uses Swift Package Manager with modular targets:
 
 ```
-MenuWhisper/
+TellMe/
 ├── Package.swift                    # SPM configuration
 ├── Sources/
 │   ├── App/                        # Main application target

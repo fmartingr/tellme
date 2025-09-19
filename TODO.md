@@ -93,7 +93,7 @@ Conventions:
 - [x] **Model Manager** (backend + minimal UI):
   - [x] Bundle a **curated JSON catalog** (name, size, languages, license, URL, SHA256).
   - [x] Download via `URLSession` with progress + resume support.
-  - [x] Validate **SHA256**; store under `~/Library/Application Support/MenuWhisper/Models`.
+  - [x] Validate **SHA256**; store under `~/Library/Application Support/TellMe/Models`.
   - [x] Allow **select active model**; persist selection.
   - [x] Language: **auto** or **forced** (persist).
 - [x] Text normalization pass (basic replacements; punctuation from model).
@@ -116,10 +116,10 @@ Conventions:
 - Preferences window with model management UI
 - NSStatusItem menu bar with model status
 - Hotkey protection (shows alert if no model loaded)
-- Proper model path handling (`~/Library/Application Support/MenuWhisper/Models`)
+- Proper model path handling (`~/Library/Application Support/TellMe/Models`)
 
 **User Experience:**
-1. Launch MenuWhisper → Menu shows "No model - click Preferences"
+1. Launch Tell me → Menu shows "No model - click Preferences"
 2. Open Preferences → See available models, download options
 3. Download model → Progress tracking, SHA256 verification
 4. Select model → Loads automatically
@@ -177,27 +177,53 @@ No automatic downloads - users must download and select models first.
 **Goal:** Complete options, localization, and stability.
 
 ### Tasks
-- [ ] Full **Preferences** window:
-  - [ ] Hotkey recorder (change ⌘⇧V if needed).
-  - [ ] Mode: Push-to-talk / Toggle.
-  - [ ] Model picker: list, **download**, **delete**, **set active**, show size/language/license.
-  - [ ] Language: Auto / Forced (dropdown).
-  - [ ] Insertion: **Direct** (default) vs **Preview**; Paste vs Typing preference.
-  - [ ] HUD: opacity/size, show/hide sounds toggles.
-  - [ ] Dictation limit: editable (default 10 min).
-  - [ ] Advanced: threads/batch; **local logs opt-in**.
-  - [ ] **Export/Import** settings (JSON).
-- [ ] Implement **Preview** dialog (off by default): shows transcribed text with **Insert** / **Cancel**.
-- [ ] Expand **localization** (ES/EN) for all UI strings.
-- [ ] Onboarding & help views (permissions, Secure Input explanation).
-- [ ] Persist all settings in `UserDefaults`; validate on load; migrate if needed.
-- [ ] UX polish: icons, animation timing, keyboard navigation, VoiceOver labels.
-- [ ] Optional: internal **timing instrumentation** (guarded by logs opt-in).
+- [x] Full **Preferences** window:
+  - [x] Hotkey recorder (change ⌘⇧V if needed).
+  - [x] Mode: Push-to-talk / Toggle.
+  - [x] Model picker: list, **download**, **delete**, **set active**, show size/language/license.
+  - [x] Language: Auto / Forced (dropdown).
+  - [x] Insertion: **Direct** (default) vs **Preview**; Paste vs Typing preference.
+  - [x] HUD: opacity/size, show/hide sounds toggles.
+  - [x] Dictation limit: editable (default 10 min).
+  - [x] Advanced: threads/batch; **local logs opt-in**.
+  - [x] **Export/Import** settings (JSON).
+- [x] Implement **Preview** dialog (off by default): shows transcribed text with **Insert** / **Cancel**.
+- [x] Expand **localization** (ES/EN) for all UI strings.
+- [x] Onboarding & help views (permissions, Secure Input explanation).
+- [x] Persist all settings in `UserDefaults`; validate on load; migrate if needed.
+- [x] UX polish: icons, animation timing, keyboard navigation, VoiceOver labels.
+- [x] Optional: internal **timing instrumentation** (guarded by logs opt-in).
 
 ### AC
-- [ ] All preferences persist and take effect without relaunch.
-- [ ] Preview (when enabled) allows quick edit & insertion.
-- [ ] ES/EN localization passes a manual spot-check.
+- [x] All preferences persist and take effect without relaunch.
+- [x] Preview (when enabled) allows quick edit & insertion.
+- [x] ES/EN localization passes a manual spot-check.
+
+**Current Status:** Phase 4 **COMPLETE**.
+
+**What works:**
+- Comprehensive preferences window with 6 tabs (General, Models, Text Insertion, Interface, Advanced, Permissions)
+- Hotkey recorder with visual feedback and customization
+- Push-to-talk and toggle mode selection
+- Language selection with 10+ language options
+- HUD customization (opacity, size, sound toggles)
+- Text insertion preferences (paste vs type, direct vs preview)
+- Advanced settings (processing threads, logging, settings reset)
+- Settings export/import to JSON format
+- Preview dialog for editing transcriptions before insertion
+- Complete localization for English and Spanish
+- Onboarding flow with step-by-step setup
+- Comprehensive help system with troubleshooting guides
+- Accessibility improvements with VoiceOver support
+- All settings persist in UserDefaults and take effect immediately
+
+**User Experience:**
+1. Full-featured preferences with intuitive tabbed interface
+2. Customizable hotkeys with visual recorder
+3. Comprehensive help and onboarding for new users
+4. Preview transcriptions before insertion
+5. Export/import settings for backup and sharing
+6. Complete offline experience with multi-language support
 
 ---
 

@@ -1,6 +1,7 @@
 import SwiftUI
 import AppKit
 import CoreUtils
+import CoreSettings
 
 public enum HUDState {
     case hidden
@@ -8,12 +9,21 @@ public enum HUDState {
     case processing
 }
 
-public class HUDWindow: NSPanel {
+public class HUDWindow: NSPanel, ObservableObject {
     private var hostingView: NSHostingView<HUDContentView>?
+    private let settings: CoreSettings.Settings
+    @Published var hudState: HUDState = .hidden
 
-    public init() {
+    public init(settings: CoreSettings.Settings) {
+        self.settings = settings
+
+        let baseWidth: CGFloat = 320
+        let baseHeight: CGFloat = 160
+        let scaledWidth = baseWidth * settings.hudSize
+        let scaledHeight = baseHeight * settings.hudSize
+
         super.init(
-            contentRect: NSRect(x: 0, y: 0, width: 320, height: 160),
+            contentRect: NSRect(x: 0, y: 0, width: scaledWidth, height: scaledHeight),
             styleMask: [.nonactivatingPanel],
             backing: .buffered,
             defer: false
@@ -33,7 +43,7 @@ public class HUDWindow: NSPanel {
     }
 
     private func setupContentView() {
-        let hudContentView = HUDContentView()
+        let hudContentView = HUDContentView(settings: settings, hudWindow: self)
         hostingView = NSHostingView(rootView: hudContentView)
 
         if let hostingView = hostingView {
@@ -44,16 +54,16 @@ public class HUDWindow: NSPanel {
     public func show(state: HUDState) {
         centerOnScreen()
 
-        if let hostingView = hostingView {
-            hostingView.rootView.updateState(state)
-        }
+        // Update the published state
+        hudState = state
+        print("HUD showing with state: \(state)")
 
         if !isVisible {
             orderFront(nil)
             alphaValue = 0
             NSAnimationContext.runAnimationGroup({ context in
                 context.duration = 0.2
-                animator().alphaValue = 1.0
+                animator().alphaValue = settings.hudOpacity
             })
         }
     }
@@ -70,9 +80,7 @@ public class HUDWindow: NSPanel {
     }
 
     public func updateLevel(_ level: Float) {
-        if let hostingView = hostingView {
-            hostingView.rootView.updateState(.listening(level: level))
-        }
+        hudState = .listening(level: level)
     }
 
     private func centerOnScreen() {
@@ -105,7 +113,8 @@ extension Notification.Name {
 }
 
 struct HUDContentView: View {
-    @State private var currentState: HUDState = .hidden
+    @ObservedObject var settings: CoreSettings.Settings
+    @ObservedObject var hudWindow: HUDWindow
 
     var body: some View {
         ZStack {
@@ -117,7 +126,7 @@ struct HUDContentView: View {
                 )
 
             VStack(spacing: 16) {
-                switch currentState {
+                switch hudWindow.hudState {
                 case .hidden:
                     EmptyView()
 
@@ -130,7 +139,11 @@ struct HUDContentView: View {
             }
             .padding(24)
         }
-        .frame(width: 320, height: 160)
+        .frame(width: 320 * settings.hudSize, height: 160 * settings.hudSize)
+        .scaleEffect(settings.hudSize)
+        .onAppear {
+            print("HUD Content View appeared with state: \(hudWindow.hudState)")
+        }
     }
 
     @ViewBuilder
@@ -140,14 +153,14 @@ struct HUDContentView: View {
                 .font(.system(size: 32))
                 .foregroundColor(.blue)
 
-            Text("Listening...")
+            Text(NSLocalizedString("hud.listening", comment: "Listening..."))
                 .font(.headline)
                 .foregroundColor(.primary)
 
             AudioLevelView(level: level)
                 .frame(height: 20)
 
-            Text("Press Esc to cancel")
+            Text(NSLocalizedString("hud.cancel", comment: "Press Esc to cancel"))
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
@@ -159,21 +172,16 @@ struct HUDContentView: View {
             ProgressView()
                 .scaleEffect(1.2)
 
-            Text("Processing...")
+            Text(NSLocalizedString("hud.processing", comment: "Processing..."))
                 .font(.headline)
                 .foregroundColor(.primary)
 
-            Text("Please wait")
+            Text(NSLocalizedString("hud.please_wait", comment: "Please wait"))
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
     }
 
-    func updateState(_ state: HUDState) {
-        withAnimation(.easeInOut(duration: 0.3)) {
-            currentState = state
-        }
-    }
 }
 
 struct AudioLevelView: View {

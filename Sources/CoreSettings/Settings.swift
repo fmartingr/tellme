@@ -28,6 +28,20 @@ public struct HotkeyConfig: Codable {
     public static let `default` = HotkeyConfig(keyCode: 9, modifiers: 768) // V key with Cmd+Shift
 }
 
+public enum InsertionMethod: String, CaseIterable, Codable {
+    case paste = "paste"
+    case typing = "typing"
+
+    public var displayName: String {
+        switch self {
+        case .paste:
+            return NSLocalizedString("preferences.insertion.method.paste", comment: "Paste method")
+        case .typing:
+            return NSLocalizedString("preferences.insertion.method.type", comment: "Type method")
+        }
+    }
+}
+
 public class Settings: ObservableObject {
     private let logger = Logger(category: "Settings")
     private let userDefaults = UserDefaults.standard
@@ -49,6 +63,15 @@ public class Settings: ObservableObject {
         didSet { userDefaults.set(dictationTimeLimit, forKey: "dictationTimeLimit") }
     }
 
+    // HUD Settings
+    @Published public var hudOpacity: Double {
+        didSet { userDefaults.set(hudOpacity, forKey: "hudOpacity") }
+    }
+
+    @Published public var hudSize: Double {
+        didSet { userDefaults.set(hudSize, forKey: "hudSize") }
+    }
+
     // Model Settings
     @Published public var activeModelName: String? {
         didSet { userDefaults.set(activeModelName, forKey: "activeModelName") }
@@ -59,12 +82,21 @@ public class Settings: ObservableObject {
     }
 
     // Insertion Settings
-    @Published public var insertionMethod: String {
-        didSet { userDefaults.set(insertionMethod, forKey: "insertionMethod") }
+    @Published public var insertionMethod: InsertionMethod {
+        didSet { userDefaults.set(insertionMethod.rawValue, forKey: "insertionMethod") }
     }
 
     @Published public var showPreview: Bool {
         didSet { userDefaults.set(showPreview, forKey: "showPreview") }
+    }
+
+    // Advanced Settings
+    @Published public var enableLogging: Bool {
+        didSet { userDefaults.set(enableLogging, forKey: "enableLogging") }
+    }
+
+    @Published public var processingThreads: Int {
+        didSet { userDefaults.set(processingThreads, forKey: "processingThreads") }
     }
 
     public init() {
@@ -73,10 +105,23 @@ public class Settings: ObservableObject {
         self.hotkeyMode = HotkeyMode(rawValue: userDefaults.string(forKey: "hotkeyMode") ?? "") ?? .pushToTalk
         self.playSounds = userDefaults.object(forKey: "playSounds") as? Bool ?? false
         self.dictationTimeLimit = userDefaults.object(forKey: "dictationTimeLimit") as? TimeInterval ?? 600 // 10 minutes
+
+        // HUD Settings
+        self.hudOpacity = userDefaults.object(forKey: "hudOpacity") as? Double ?? 0.9
+        self.hudSize = userDefaults.object(forKey: "hudSize") as? Double ?? 1.0
+
+        // Model Settings
         self.activeModelName = userDefaults.string(forKey: "activeModelName")
         self.forcedLanguage = userDefaults.string(forKey: "forcedLanguage")
-        self.insertionMethod = userDefaults.string(forKey: "insertionMethod") ?? "paste"
+
+        // Insertion Settings
+        let insertionMethodString = userDefaults.string(forKey: "insertionMethod") ?? "paste"
+        self.insertionMethod = InsertionMethod(rawValue: insertionMethodString) ?? .paste
         self.showPreview = userDefaults.object(forKey: "showPreview") as? Bool ?? false
+
+        // Advanced Settings
+        self.enableLogging = userDefaults.object(forKey: "enableLogging") as? Bool ?? false
+        self.processingThreads = userDefaults.object(forKey: "processingThreads") as? Int ?? 4
 
         logger.info("Settings initialized")
     }
@@ -88,10 +133,14 @@ public class Settings: ObservableObject {
             "hotkeyMode": hotkeyMode.rawValue,
             "playSounds": playSounds,
             "dictationTimeLimit": dictationTimeLimit,
+            "hudOpacity": hudOpacity,
+            "hudSize": hudSize,
             "activeModelName": activeModelName as Any,
             "forcedLanguage": forcedLanguage as Any,
-            "insertionMethod": insertionMethod,
-            "showPreview": showPreview
+            "insertionMethod": insertionMethod.rawValue,
+            "showPreview": showPreview,
+            "enableLogging": enableLogging,
+            "processingThreads": processingThreads
         ]
 
         return try JSONSerialization.data(withJSONObject: settingsDict, options: .prettyPrinted)
@@ -118,15 +167,32 @@ public class Settings: ObservableObject {
             dictationTimeLimit = timeLimit
         }
 
+        if let opacity = settingsDict["hudOpacity"] as? Double {
+            hudOpacity = opacity
+        }
+
+        if let size = settingsDict["hudSize"] as? Double {
+            hudSize = size
+        }
+
         activeModelName = settingsDict["activeModelName"] as? String
         forcedLanguage = settingsDict["forcedLanguage"] as? String
 
-        if let method = settingsDict["insertionMethod"] as? String {
+        if let methodString = settingsDict["insertionMethod"] as? String,
+           let method = InsertionMethod(rawValue: methodString) {
             insertionMethod = method
         }
 
         if let preview = settingsDict["showPreview"] as? Bool {
             showPreview = preview
+        }
+
+        if let logging = settingsDict["enableLogging"] as? Bool {
+            enableLogging = logging
+        }
+
+        if let threads = settingsDict["processingThreads"] as? Int {
+            processingThreads = threads
         }
 
         logger.info("Settings imported successfully")

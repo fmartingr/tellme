@@ -1,7 +1,7 @@
-/* Menu-Whisper - Spanish Localization */
+/* Tell me - Spanish Localization */
 
 /* General */
-"app.name" = "Menu-Whisper";
+"app.name" = "Tell me";
 "general.ok" = "Aceptar";
 "general.cancel" = "Cancelar";
 "general.continue" = "Continuar";
@@ -13,29 +13,54 @@
 "menubar.listening" = "Escuchando";
 "menubar.processing" = "Procesando";
 "menubar.preferences" = "Preferencias...";
-"menubar.quit" = "Salir de Menu-Whisper";
+"menubar.help" = "Ayuda";
+"menubar.quit" = "Salir de Tell me";
+"menubar.loading_model" = "Cargando modelo...";
+"menubar.model_status" = "Modelo: %@";
+"menubar.model_loading" = "Modelo: Cargando...";
+"menubar.no_model" = "Sin modelo - haz clic en Preferencias";
+"menubar.reset_onboarding" = "Restablecer Configuración Inicial";
 
 /* HUD States */
 "hud.listening" = "Escuchando...";
 "hud.processing" = "Transcribiendo...";
 "hud.cancel" = "Presiona Esc para cancelar";
+"hud.please_wait" = "Por favor espera";
 
 /* Permissions */
 "permissions.microphone.title" = "Acceso al Micrófono Requerido";
-"permissions.microphone.message" = "Menu-Whisper necesita acceso a tu micrófono para realizar la transcripción de voz a texto.";
+"permissions.microphone.message" = "Tell me necesita acceso a tu micrófono para capturar voz para transcripción. Por favor otorga acceso al micrófono en Configuración del Sistema.";
 "permissions.accessibility.title" = "Acceso de Accesibilidad Requerido";
-"permissions.accessibility.message" = "Menu-Whisper necesita acceso de Accesibilidad para insertar texto transcrito en aplicaciones.";
+"permissions.accessibility.message" = "Tell me necesita acceso de Accesibilidad para insertar texto transcrito en otras aplicaciones. Por favor otorga acceso de accesibilidad en Configuración del Sistema.";
 "permissions.input_monitoring.title" = "Monitoreo de Entrada Requerido";
-"permissions.input_monitoring.message" = "Menu-Whisper necesita acceso de Monitoreo de Entrada para registrar atajos de teclado globales.";
+"permissions.input_monitoring.message" = "Tell me necesita acceso de Monitoreo de Entrada para registrar atajos globales e insertar texto. Por favor otorga acceso de monitoreo de entrada en Configuración del Sistema.";
 "permissions.open_settings" = "Abrir Configuración del Sistema";
+"permissions.refresh_status" = "Actualizar Estado";
+
+/* Button Labels */
+"general.select" = "Seleccionar";
+"general.reset" = "Restablecer";
+
+/* Picker Labels */
+"general.language" = "Idioma";
+"general.mode" = "Modo";
+"general.method" = "Método";
+
+/* Slider and Control Labels */
+"preferences.general.time_limit_slider" = "Límite de Tiempo";
+"preferences.hud.opacity_slider" = "Opacidad del HUD";
+"preferences.hud.size_slider" = "Tamaño del HUD";
+"preferences.advanced.threads_slider" = "Hilos de Procesamiento";
 
 /* Preferences Window */
-"preferences.title" = "Preferencias de Menu-Whisper";
+"preferences.title" = "Preferencias de Tell me";
 "preferences.general" = "General";
 "preferences.models" = "Modelos";
 "preferences.hotkeys" = "Atajos";
 "preferences.insertion" = "Inserción de Texto";
+"preferences.interface" = "Interfaz";
 "preferences.advanced" = "Avanzado";
+"preferences.permissions" = "Permisos";
 
 /* General Preferences */
 "preferences.general.hotkey" = "Atajo Global:";
@@ -51,6 +76,7 @@
 "preferences.models.language" = "Idioma:";
 "preferences.models.language.auto" = "Detección automática";
 "preferences.models.download" = "Descargar";
+"preferences.models.downloading" = "Descargando...";
 "preferences.models.delete" = "Eliminar";
 "preferences.models.size" = "Tamaño:";
 "preferences.models.languages" = "Idiomas:";
@@ -75,3 +101,160 @@
 "success.model.downloaded" = "Modelo descargado exitosamente";
 "success.settings.exported" = "Configuración exportada exitosamente";
 "success.settings.imported" = "Configuración importada exitosamente";
+
+/* Status Labels */
+"status.loaded" = "Cargado";
+"status.loading" = "Cargando...";
+"status.granted" = "Otorgado";
+"status.denied" = "Denegado";
+"status.not_set" = "No Configurado";
+"status.restricted" = "Restringido";
+
+/* Alert Titles */
+"alert.delete_model" = "Eliminar Modelo";
+"alert.success" = "Éxito";
+"alert.error" = "Error";
+
+/* Permissions */
+"permissions.microphone.title_short" = "Micrófono";
+"permissions.microphone.description_short" = "Requerido para capturar voz para transcripción";
+"permissions.accessibility.title_short" = "Accesibilidad";
+"permissions.accessibility.description_short" = "Requerido para insertar texto transcrito en otras aplicaciones";
+"permissions.input_monitoring.title_short" = "Monitoreo de Entrada";
+"permissions.input_monitoring.description_short" = "Requerido para enviar eventos de teclado para inserción de texto";
+
+/* Preview Dialog */
+"preview.title" = "Vista Previa de Transcripción";
+"preview.description" = "Revisa y edita el texto transcrito antes de insertarlo.";
+"preview.transcribed_text" = "Texto Transcrito:";
+"preview.character_count" = "%d caracteres";
+"preview.insert" = "Insertar";
+
+/* HUD Settings */
+"preferences.hud.title" = "Configuración de Interfaz";
+"preferences.hud.appearance" = "Apariencia del HUD";
+"preferences.hud.opacity" = "Opacidad:";
+"preferences.hud.size" = "Tamaño:";
+"preferences.hud.audio_feedback" = "Retroalimentación de Audio";
+"preferences.hud.sounds_description" = "Habilita retroalimentación de audio para saber cuándo empieza y termina el dictado.";
+
+/* Advanced Settings */
+"preferences.advanced.title" = "Configuración Avanzada";
+"preferences.advanced.processing" = "Procesamiento";
+"preferences.advanced.threads" = "Hilos de procesamiento:";
+"preferences.advanced.threads_description" = "Más hilos pueden mejorar el rendimiento en sistemas multi-núcleo pero usan más CPU.";
+"preferences.advanced.logging" = "Registro";
+"preferences.advanced.logging_description" = "Los registros se almacenan solo localmente y contienen información de tiempo y errores. Nunca se registra audio o texto.";
+"preferences.advanced.enable_logging" = "Habilitar registro local";
+"preferences.advanced.reset" = "Restablecer";
+"preferences.advanced.reset_button" = "Restablecer Toda la Configuración por Defecto";
+"preferences.advanced.reset_title" = "Restablecer Configuración";
+"preferences.advanced.reset_message" = "Esto restablecerá toda la configuración a sus valores por defecto. Esta acción no se puede deshacer.";
+
+/* General Settings */
+"preferences.general.global_hotkey" = "Atajo Global";
+"preferences.general.hotkey_combination" = "Combinación de Teclas:";
+"preferences.general.audio_timing" = "Audio y Temporización";
+"preferences.general.settings_management" = "Gestión de Configuración";
+"preferences.general.export_settings" = "Exportar Configuración...";
+"preferences.general.import_settings" = "Importar Configuración...";
+
+/* Insertion Settings */
+"preferences.insertion.title" = "Inserción de Texto";
+"preferences.insertion.method_description" = "Pegar es más rápido y confiable, pero puede no funcionar en todas las aplicaciones. El método de escritura funciona en todas partes pero es más lento.";
+"preferences.insertion.preview_description" = "Cuando está habilitado, el texto transcrito se mostrará en un diálogo antes de la inserción, permitiéndote revisarlo y editarlo.";
+"preferences.insertion.secure_input_title" = "Manejo de Entrada Segura";
+"preferences.insertion.secure_input_description" = "La inserción de texto se desactiva automáticamente en contextos seguros (campos de contraseña, etc.). El texto se copia al portapapeles en su lugar.";
+
+/* Languages */
+"language.auto_detect" = "Detección automática";
+"language.english" = "Inglés";
+"language.spanish" = "Español";
+"language.french" = "Francés";
+"language.german" = "Alemán";
+"language.italian" = "Italiano";
+"language.portuguese" = "Portugués";
+"language.russian" = "Ruso";
+"language.chinese" = "Chino";
+"language.japanese" = "Japonés";
+"language.korean" = "Coreano";
+
+/* Hotkey Recorder */
+"hotkey.press_keys" = "Presiona teclas...";
+"hotkey.reset_default" = "Restablecer por Defecto";
+"hotkey.record_description" = "Haz clic para grabar una nueva combinación de teclas";
+
+/* Onboarding */
+"onboarding.title" = "Bienvenido a Tell me";
+"onboarding.subtitle" = "Reconocimiento de voz offline para macOS";
+"onboarding.what_is" = "¿Qué es Tell me?";
+"onboarding.feature.offline" = "Reconocimiento de Voz Offline";
+"onboarding.feature.offline_desc" = "Convierte tu voz a texto sin conexión a internet";
+"onboarding.feature.hotkey" = "Atajo Global";
+"onboarding.feature.hotkey_desc" = "Usa ⌘⇧V desde cualquier lugar para iniciar dictado";
+"onboarding.feature.privacy" = "Privacidad Primero";
+"onboarding.feature.privacy_desc" = "Tu audio nunca sale de tu dispositivo";
+
+"onboarding.permissions.title" = "Permisos Requeridos";
+"onboarding.permissions.description" = "Tell me necesita los siguientes permisos para funcionar correctamente:";
+
+"onboarding.models.title" = "Descargar un Modelo de Voz";
+"onboarding.models.description" = "Tell me requiere un modelo de reconocimiento de voz para funcionar. Recomendamos empezar con el modelo tiny para configuración rápida.";
+"onboarding.models.recommended" = "Recomendado: Whisper Tiny";
+"onboarding.models.tiny_description" = "39 MB • Rápido • Bueno para configuración inicial";
+"onboarding.models.downloaded" = "Descargado";
+"onboarding.models.downloading" = "Descargando...";
+"onboarding.models.download_failed" = "Descarga falló: %@";
+"onboarding.models.info1" = "Puedes descargar modelos más grandes y precisos después desde Preferencias";
+"onboarding.models.info2" = "Los modelos funcionan completamente offline una vez descargados";
+
+"onboarding.completion.ready_title" = "¡Todo Listo!";
+"onboarding.completion.ready_desc" = "¡Tell me está listo para usar con tu modelo descargado!";
+"onboarding.completion.incomplete_title" = "Configuración Incompleta";
+"onboarding.completion.incomplete_desc" = "Tell me no funcionará correctamente sin un modelo de reconocimiento de voz.";
+"onboarding.completion.no_model_warning" = "Sin modelo descargado - el dictado no funcionará";
+"onboarding.completion.what_next" = "Qué hacer a continuación:";
+"onboarding.completion.step1" = "Presiona ⌘⇧V para iniciar dictado";
+"onboarding.completion.step1_desc" = "O cambia el atajo en Preferencias";
+"onboarding.completion.step2" = "Habla claramente cuando aparezca el HUD";
+"onboarding.completion.step2_desc" = "Suelta el atajo cuando termines de hablar";
+"onboarding.completion.step3" = "Presiona Esc para cancelar en cualquier momento";
+"onboarding.completion.step3_desc" = "Funciona en todas las aplicaciones y contextos";
+"onboarding.completion.next_step1" = "• Regresa al paso 3 y descarga el modelo tiny";
+"onboarding.completion.next_step2" = "• O descarga modelos después desde Preferencias → Modelos";
+"onboarding.completion.next_step3" = "• Verás una alerta cuando trates de usar dictado sin modelo";
+"onboarding.completion.footer" = "Accede a Preferencias desde el ícono de la barra de menú en cualquier momento.";
+
+"onboarding.buttons.skip" = "Saltar Configuración";
+"onboarding.buttons.back" = "Atrás";
+"onboarding.buttons.next" = "Siguiente";
+"onboarding.buttons.get_started" = "Empezar";
+
+/* Missing Preferences Strings */
+"preferences.models.speech_recognition" = "Modelos de Reconocimiento de Voz";
+"preferences.models.description" = "Descarga y gestiona modelos de reconocimiento de voz. Los modelos más grandes proporcionan mejor precisión pero usan más memoria y tiempo de procesamiento.";
+"preferences.models.current_model" = "Modelo Actual";
+"preferences.models.no_model" = "Ningún modelo seleccionado";
+"preferences.models.recognition_language" = "Idioma de Reconocimiento:";
+"preferences.models.available_models" = "Modelos Disponibles";
+"preferences.models.active_badge" = "ACTIVO";
+"preferences.models.delete_confirm" = "¿Estás seguro de que quieres eliminar '%@'? Esta acción no se puede deshacer.";
+
+/* Permissions Strings */
+"preferences.permissions.description" = "Tell me requiere ciertos permisos del sistema para funcionar correctamente. Haz clic en los botones de abajo para otorgar permisos en Configuración del Sistema.";
+"preferences.permissions.need_help" = "¿Necesitas Ayuda?";
+"preferences.permissions.after_granting" = "Después de otorgar permisos en Configuración del Sistema:";
+"preferences.permissions.step1" = "1. Cierra Configuración del Sistema";
+"preferences.permissions.step2" = "2. Haz clic en 'Actualizar Estado' para actualizar el estado de permisos";
+"preferences.permissions.step3" = "3. Algunos permisos pueden requerir reiniciar Tell me";
+
+/* General Tab Strings */
+"preferences.general.title" = "Configuración General";
+"preferences.general.dictation_limit" = "Límite de tiempo de dictado:";
+"preferences.general.minutes" = "minutos";
+
+/* Advanced Tab Strings */
+"preferences.advanced.threads_description" = "Más hilos pueden mejorar el rendimiento en sistemas multi-núcleo pero usan más CPU.";
+"preferences.advanced.logging_description" = "Los registros se almacenan solo localmente y contienen información de tiempo y errores. Nunca se registra audio o texto.";
+"preferences.advanced.reset_confirmation" = "Esto restablecerá toda la configuración a sus valores por defecto. Esta acción no se puede deshacer.";
+

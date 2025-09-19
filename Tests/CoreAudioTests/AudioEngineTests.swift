@@ -1,5 +1,5 @@
 import XCTest
-@testable import MenuWhisperAudio
+@testable import TellMeAudio
 
 final class AudioEngineTests: XCTestCase {
     func testAudioEngineInitialization() {

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Build script for Menu-Whisper
+# Build script for Tell me
 # This script builds the project using Swift Package Manager
 
 set -e
 
-echo "🔨 Building Menu-Whisper..."
+echo "🔨 Building Tell me..."
 
 # Clean previous build
 echo "🧹 Cleaning previous build..."

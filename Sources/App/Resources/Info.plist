@@ -4,16 +4,21 @@
 <dict>
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
+    <key>CFBundleLocalizations</key>
+    <array>
+        <string>en</string>
+        <string>es</string>
+    </array>
     <key>CFBundleDisplayName</key>
-    <string>Menu-Whisper</string>
+    <string>Tell me</string>
     <key>CFBundleExecutable</key>
-    <string>MenuWhisper</string>
+    <string>TellMe</string>
     <key>CFBundleIdentifier</key>
-    <string>com.menuwhisper.app</string>
+    <string>com.fmartingr.tellme</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>Menu-Whisper</string>
+    <string>Tell me</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -27,7 +32,7 @@
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2025. All rights reserved.</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>Menu-Whisper needs access to your microphone to capture speech for offline transcription. Your audio data never leaves your device.</string>
+    <string>Tell me needs access to your microphone to capture speech for offline transcription. Your audio data never leaves your device.</string>
     <key>NSSupportsAutomaticTermination</key>
     <true/>
     <key>NSSupportsSuddenTermination</key>

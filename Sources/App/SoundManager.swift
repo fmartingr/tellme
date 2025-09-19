@@ -2,16 +2,17 @@ import Foundation
 import AVFoundation
 import AppKit
 import CoreUtils
+import CoreSettings
 
 public class SoundManager: ObservableObject {
     private let logger = Logger(category: "SoundManager")
-
-    @Published public var soundsEnabled: Bool = true
+    private let settings: CoreSettings.Settings
 
     private var startSound: AVAudioPlayer?
     private var stopSound: AVAudioPlayer?
 
-    public init() {
+    public init(settings: CoreSettings.Settings) {
+        self.settings = settings
         setupSounds()
     }
 
@@ -28,7 +29,7 @@ public class SoundManager: ObservableObject {
     }
 
     public func playStartSound() {
-        guard soundsEnabled else { return }
+        guard settings.playSounds else { return }
 
         logger.debug("Playing start sound")
         // Use a subtle system sound for start
@@ -36,7 +37,7 @@ public class SoundManager: ObservableObject {
     }
 
     public func playStopSound() {
-        guard soundsEnabled else { return }
+        guard settings.playSounds else { return }
 
         logger.debug("Playing stop sound")
         // Use a different system sound for stop

@@ -1,7 +1,7 @@
 import XCTest
 @testable import CoreSTT
 @testable import CoreModels
-@testable import MenuWhisperAudio
+@testable import TellMeAudio
 
 /// Integration tests to verify Phase 2 whisper.cpp implementation
 /// These tests validate the architecture without requiring real model files
@@ -132,7 +132,7 @@ final class Phase2IntegrationTests: XCTestCase {
 
         // Test model path generation
         let modelPath = testModel.fileURL
-        XCTAssertTrue(modelPath.absoluteString.contains("MenuWhisper/Models"), "Should use correct models directory")
+        XCTAssertTrue(modelPath.absoluteString.contains("TellMe/Models"), "Should use correct models directory")
         XCTAssertTrue(modelPath.lastPathComponent.hasSuffix(".bin"), "Should generate .bin filename")
 
         // Test estimated RAM info

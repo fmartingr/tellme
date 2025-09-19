@@ -2,13 +2,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "MenuWhisper",
+    name: "TellMe",
     platforms: [
         .macOS(.v13)
     ],
     products: [
         .executable(
-            name: "MenuWhisper",
+            name: "TellMe",
             targets: ["App"]
         )
     ],
@@ -20,7 +20,7 @@ let package = Package(
         .executableTarget(
             name: "App",
             dependencies: [
-                "MenuWhisperAudio",
+                "TellMeAudio",
                 "CoreSTT",
                 "CoreModels",
                 "CoreInjection",
@@ -36,7 +36,7 @@ let package = Package(
 
         // Core Module Targets
         .target(
-            name: "MenuWhisperAudio",
+            name: "TellMeAudio",
             dependencies: ["CoreUtils"],
             path: "Sources/CoreAudio"
         ),
@@ -46,7 +46,7 @@ let package = Package(
             dependencies: [
                 "CoreUtils",
                 "CoreModels",
-                "MenuWhisperAudio",
+                "TellMeAudio",
                 .product(name: "SwiftWhisper", package: "SwiftWhisper")
             ],
             path: "Sources/CoreSTT"
@@ -83,8 +83,8 @@ let package = Package(
 
         // Test Targets
         .testTarget(
-            name: "MenuWhisperAudioTests",
-            dependencies: ["MenuWhisperAudio"],
+            name: "TellMeAudioTests",
+            dependencies: ["TellMeAudio"],
             path: "Tests/CoreAudioTests"
         ),
 
@@ -126,7 +126,7 @@ let package = Package(
 
         .testTarget(
             name: "IntegrationTests",
-            dependencies: ["CoreSTT", "CoreModels", "MenuWhisperAudio"],
+            dependencies: ["CoreSTT", "CoreModels", "TellMeAudio"],
             path: "Tests/IntegrationTests"
         )
     ]

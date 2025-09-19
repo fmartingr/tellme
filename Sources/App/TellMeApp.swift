@@ -10,7 +10,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @main
-struct MenuWhisperApp: App {
+struct TellMeApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
