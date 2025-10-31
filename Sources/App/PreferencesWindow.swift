@@ -27,7 +27,7 @@ class PreferencesWindowController: NSWindowController {
 
         super.init(window: window)
 
-        window.title = NSLocalizedString("preferences.title", comment: "Tell me Preferences")
+        window.title = L("preferences.title")
         window.center()
         window.minSize = NSSize(width: 750, height: 600)
         window.maxSize = NSSize(width: 1200, height: 800)
@@ -85,7 +85,7 @@ struct PreferencesView: View {
         TabView(selection: $selectedTab) {
             GeneralTab(settings: settings)
                 .tabItem {
-                    Label(NSLocalizedString("preferences.general", comment: "General"), systemImage: "gearshape")
+                    Label(L("preferences.general"), systemImage: "gearshape")
                 }
                 .tag(0)
 
@@ -99,40 +99,40 @@ struct PreferencesView: View {
                 modelToDelete: $modelToDelete
             )
             .tabItem {
-                Label(NSLocalizedString("preferences.models", comment: "Models"), systemImage: "brain.head.profile")
+                Label(L("preferences.models"), systemImage: "brain.head.profile")
             }
             .tag(1)
 
             InsertionTab(settings: settings)
                 .tabItem {
-                    Label(NSLocalizedString("preferences.insertion", comment: "Text Insertion"), systemImage: "text.cursor")
+                    Label(L("preferences.insertion"), systemImage: "text.cursor")
                 }
                 .tag(2)
 
             HUDTab(settings: settings)
                 .tabItem {
-                    Label(NSLocalizedString("preferences.interface", comment: "Interface"), systemImage: "rectangle.on.rectangle")
+                    Label(L("preferences.interface"), systemImage: "rectangle.on.rectangle")
                 }
                 .tag(3)
 
             AdvancedTab(settings: settings)
                 .tabItem {
-                    Label(NSLocalizedString("preferences.advanced", comment: "Advanced"), systemImage: "slider.horizontal.3")
+                    Label(L("preferences.advanced"), systemImage: "slider.horizontal.3")
                 }
                 .tag(4)
 
             PermissionsTab(permissionManager: permissionManager)
                 .tabItem {
-                    Label(NSLocalizedString("preferences.permissions", comment: "Permissions"), systemImage: "lock.shield")
+                    Label(L("preferences.permissions"), systemImage: "lock.shield")
                 }
                 .tag(5)
         }
         .frame(minWidth: 750, idealWidth: 800, maxWidth: 1200, minHeight: 600, idealHeight: 600, maxHeight: 800)
-        .alert(NSLocalizedString("alert.delete_model", comment: "Delete Model"), isPresented: $showingDeleteAlert) {
-            Button(NSLocalizedString("general.cancel", comment: "Cancel"), role: .cancel) {
+        .alert(L("alert.delete_model"), isPresented: $showingDeleteAlert) {
+            Button(L("general.cancel"), role: .cancel) {
                 modelToDelete = nil
             }
-            Button(NSLocalizedString("preferences.models.delete", comment: "Delete"), role: .destructive) {
+            Button(L("preferences.models.delete"), role: .destructive) {
                 if let model = modelToDelete {
                     deleteModel(model)
                 }
@@ -140,7 +140,7 @@ struct PreferencesView: View {
             }
         } message: {
             if let model = modelToDelete {
-                Text(String(format: NSLocalizedString("preferences.models.delete_confirm", comment: "Delete confirmation"), model.name))
+                Text(String(format: L("preferences.models.delete_confirm"), model.name))
             }
         }
     }
@@ -166,17 +166,17 @@ struct ModelsTab: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(NSLocalizedString("preferences.models.title", comment: "Speech Recognition Models"))
+            Text(L("preferences.models.title"))
                 .font(.title2)
                 .fontWeight(.semibold)
 
-            Text(NSLocalizedString("preferences.models.description", comment: "Model description"))
+            Text(L("preferences.models.description"))
                 .font(.caption)
                 .foregroundColor(.secondary)
 
             // Current Model Status
             VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("preferences.models.current_model", comment: "Current Model"))
+                Text(L("preferences.models.current_model"))
                     .font(.headline)
 
                 if let activeModel = modelManager.activeModel {
@@ -196,7 +196,7 @@ struct ModelsTab: View {
                             .fill(whisperEngine.isModelLoaded() ? Color.green : Color.orange)
                             .frame(width: 8, height: 8)
 
-                        Text(whisperEngine.isModelLoaded() ? NSLocalizedString("status.loaded", comment: "Loaded") : NSLocalizedString("status.loading", comment: "Loading..."))
+                        Text(whisperEngine.isModelLoaded() ? L("status.loaded") : L("status.loading"))
                             .font(.caption)
                             .foregroundColor(whisperEngine.isModelLoaded() ? .green : .orange)
                     }
@@ -204,7 +204,7 @@ struct ModelsTab: View {
                     .background(Color(NSColor.controlBackgroundColor))
                     .cornerRadius(8)
                 } else {
-                    Text(NSLocalizedString("preferences.models.no_model", comment: "No model selected"))
+                    Text(L("preferences.models.no_model"))
                         .foregroundColor(.secondary)
                         .padding(12)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -215,31 +215,31 @@ struct ModelsTab: View {
 
             // Language Settings
             VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("preferences.models.language", comment: "Language"))
+                Text(L("preferences.models.language"))
                     .font(.headline)
 
                 HStack {
-                    Text(NSLocalizedString("preferences.models.recognition_language", comment: "Recognition Language:"))
+                    Text(L("preferences.models.recognition_language"))
                         .font(.body)
 
-                    Picker(NSLocalizedString("general.language", comment: "Language"), selection: Binding(
+                    Picker(L("general.language"), selection: Binding(
                         get: { settings.forcedLanguage ?? "auto" },
                         set: { newValue in
                             settings.forcedLanguage = newValue == "auto" ? nil : newValue
                         }
                     )) {
-                        Text(NSLocalizedString("language.auto_detect", comment: "Auto-detect")).tag("auto")
+                        Text(L("language.auto_detect")).tag("auto")
                         Divider()
-                        Text(NSLocalizedString("language.english", comment: "English")).tag("en")
-                        Text(NSLocalizedString("language.spanish", comment: "Spanish")).tag("es")
-                        Text(NSLocalizedString("language.french", comment: "French")).tag("fr")
-                        Text(NSLocalizedString("language.german", comment: "German")).tag("de")
-                        Text(NSLocalizedString("language.italian", comment: "Italian")).tag("it")
-                        Text(NSLocalizedString("language.portuguese", comment: "Portuguese")).tag("pt")
-                        Text(NSLocalizedString("language.russian", comment: "Russian")).tag("ru")
-                        Text(NSLocalizedString("language.chinese", comment: "Chinese")).tag("zh")
-                        Text(NSLocalizedString("language.japanese", comment: "Japanese")).tag("ja")
-                        Text(NSLocalizedString("language.korean", comment: "Korean")).tag("ko")
+                        Text(L("language.english")).tag("en")
+                        Text(L("language.spanish")).tag("es")
+                        Text(L("language.french")).tag("fr")
+                        Text(L("language.german")).tag("de")
+                        Text(L("language.italian")).tag("it")
+                        Text(L("language.portuguese")).tag("pt")
+                        Text(L("language.russian")).tag("ru")
+                        Text(L("language.chinese")).tag("zh")
+                        Text(L("language.japanese")).tag("ja")
+                        Text(L("language.korean")).tag("ko")
                     }
                     .pickerStyle(.menu)
                     .frame(width: 150)
@@ -253,7 +253,7 @@ struct ModelsTab: View {
 
             // Available Models
             VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("preferences.models.available_models", comment: "Available Models"))
+                Text(L("preferences.models.available_models"))
                     .font(.headline)
 
                 ScrollView {
@@ -352,7 +352,7 @@ struct ModelRow: View {
                         .fontWeight(.medium)
 
                     if isActive {
-                        Text(NSLocalizedString("preferences.models.active_badge", comment: "ACTIVE"))
+                        Text(L("preferences.models.active_badge"))
                             .font(.caption)
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -381,13 +381,13 @@ struct ModelRow: View {
                 if model.isDownloaded {
                     HStack(spacing: 8) {
                         if !isActive {
-                            Button(NSLocalizedString("general.select", comment: "Select")) {
+                            Button(L("general.select")) {
                                 onSelect()
                             }
                             .buttonStyle(.bordered)
                         }
 
-                        Button(NSLocalizedString("preferences.models.delete", comment: "Delete")) {
+                        Button(L("preferences.models.delete")) {
                             onDelete()
                         }
                         .buttonStyle(.bordered)
@@ -398,12 +398,12 @@ struct ModelRow: View {
                         HStack {
                             ProgressView()
                                 .scaleEffect(0.8)
-                            Text(NSLocalizedString("preferences.models.downloading", comment: "Downloading..."))
+                            Text(L("preferences.models.downloading"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     } else {
-                        Button(NSLocalizedString("preferences.models.download", comment: "Download")) {
+                        Button(L("preferences.models.download")) {
                             onDownload()
                         }
                         .buttonStyle(.bordered)
@@ -428,19 +428,19 @@ struct PermissionsTab: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(NSLocalizedString("preferences.permissions", comment: "Permissions"))
+            Text(L("preferences.permissions"))
                 .font(.title2)
                 .fontWeight(.semibold)
 
-            Text(NSLocalizedString("preferences.permissions.description", comment: "Permissions description"))
+            Text(L("preferences.permissions.description"))
                 .font(.caption)
                 .foregroundColor(.secondary)
 
             VStack(alignment: .leading, spacing: 12) {
                 // Microphone Permission
                 PermissionRow(
-                    title: NSLocalizedString("permissions.microphone.title_short", comment: "Microphone"),
-                    description: NSLocalizedString("permissions.microphone.description_short", comment: "Microphone description"),
+                    title: L("permissions.microphone.title_short"),
+                    description: L("permissions.microphone.description_short"),
                     status: permissionManager.microphoneStatus,
                     onOpenSettings: {
                         permissionManager.openSystemSettings(for: .microphone)
@@ -454,8 +454,8 @@ struct PermissionsTab: View {
 
                 // Accessibility Permission
                 PermissionRow(
-                    title: NSLocalizedString("permissions.accessibility.title_short", comment: "Accessibility"),
-                    description: NSLocalizedString("permissions.accessibility.description_short", comment: "Accessibility description"),
+                    title: L("permissions.accessibility.title_short"),
+                    description: L("permissions.accessibility.description_short"),
                     status: permissionManager.accessibilityStatus,
                     onOpenSettings: {
                         permissionManager.openSystemSettings(for: .accessibility)
@@ -469,8 +469,8 @@ struct PermissionsTab: View {
 
                 // Input Monitoring Permission
                 PermissionRow(
-                    title: NSLocalizedString("permissions.input_monitoring.title_short", comment: "Input Monitoring"),
-                    description: NSLocalizedString("permissions.input_monitoring.description_short", comment: "Input Monitoring description"),
+                    title: L("permissions.input_monitoring.title_short"),
+                    description: L("permissions.input_monitoring.description_short"),
                     status: permissionManager.inputMonitoringStatus,
                     onOpenSettings: {
                         permissionManager.openSystemSettings(for: .inputMonitoring)
@@ -486,17 +486,17 @@ struct PermissionsTab: View {
 
             // Help text
             VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("preferences.permissions.need_help", comment: "Need Help?"))
+                Text(L("preferences.permissions.need_help"))
                     .font(.headline)
 
-                Text(NSLocalizedString("preferences.permissions.after_granting", comment: "After granting permissions"))
+                Text(L("preferences.permissions.after_granting"))
                     .font(.body)
                     .foregroundColor(.secondary)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(NSLocalizedString("preferences.permissions.step1", comment: "Step 1"))
-                    Text(NSLocalizedString("preferences.permissions.step2", comment: "Step 2"))
-                    Text(NSLocalizedString("preferences.permissions.step3", comment: "Step 3"))
+                    Text(L("preferences.permissions.step1"))
+                    Text(L("preferences.permissions.step2"))
+                    Text(L("preferences.permissions.step3"))
                 }
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -548,14 +548,14 @@ struct PermissionRow: View {
 
             VStack(spacing: 6) {
                 if status != .granted {
-                    Button(NSLocalizedString("permissions.open_settings", comment: "Open System Settings")) {
+                    Button(L("permissions.open_settings")) {
                         onOpenSettings()
                     }
                     .buttonStyle(.bordered)
                     .controlSize(.small)
                 }
 
-                Button(NSLocalizedString("permissions.refresh_status", comment: "Refresh Status")) {
+                Button(L("permissions.refresh_status")) {
                     onRefresh()
                 }
                 .buttonStyle(.borderless)
@@ -579,13 +579,13 @@ struct PermissionRow: View {
     private var statusText: String {
         switch status {
         case .granted:
-            return NSLocalizedString("status.granted", comment: "Granted")
+            return L("status.granted")
         case .denied:
-            return NSLocalizedString("status.denied", comment: "Denied")
+            return L("status.denied")
         case .notDetermined:
-            return NSLocalizedString("status.not_set", comment: "Not Set")
+            return L("status.not_set")
         case .restricted:
-            return NSLocalizedString("status.restricted", comment: "Restricted")
+            return L("status.restricted")
         }
     }
 }
@@ -595,18 +595,18 @@ struct GeneralTab: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(NSLocalizedString("preferences.general.title", comment: "General Settings"))
+            Text(L("preferences.general.title"))
                 .font(.title2)
                 .fontWeight(.semibold)
 
             // Hotkey Configuration
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.general.global_hotkey", comment: "Global Hotkey"))
+                Text(L("preferences.general.global_hotkey"))
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text(NSLocalizedString("preferences.general.hotkey_combination", comment: "Hotkey Combination:"))
+                        Text(L("preferences.general.hotkey_combination"))
                             .frame(width: 140, alignment: .leading)
 
                         HotkeyRecorder(hotkey: $settings.hotkey)
@@ -615,10 +615,10 @@ struct GeneralTab: View {
                     }
 
                     HStack {
-                        Text(NSLocalizedString("preferences.general.mode", comment: "Activation Mode:"))
+                        Text(L("preferences.general.mode"))
                             .frame(width: 140, alignment: .leading)
 
-                        Picker(NSLocalizedString("general.mode", comment: "Mode"), selection: $settings.hotkeyMode) {
+                        Picker(L("general.mode"), selection: $settings.hotkeyMode) {
                             ForEach(HotkeyMode.allCases, id: \.self) { mode in
                                 Text(mode.displayName).tag(mode)
                             }
@@ -636,20 +636,20 @@ struct GeneralTab: View {
 
             // Audio and Timing
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.general.audio_timing", comment: "Audio & Timing"))
+                Text(L("preferences.general.audio_timing"))
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        Toggle(NSLocalizedString("preferences.general.sounds", comment: "Play sounds"), isOn: $settings.playSounds)
+                        Toggle(L("preferences.general.sounds"), isOn: $settings.playSounds)
                         Spacer()
                     }
 
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text(NSLocalizedString("preferences.general.limit", comment: "Dictation time limit:"))
+                            Text(L("preferences.general.limit"))
                             Spacer()
-                            Text("\(Int(settings.dictationTimeLimit / 60)) \(NSLocalizedString("preferences.general.minutes", comment: "minutes"))")
+                            Text("\(Int(settings.dictationTimeLimit / 60)) \(L("preferences.general.minutes"))")
                                 .foregroundColor(.secondary)
                         }
 
@@ -661,7 +661,7 @@ struct GeneralTab: View {
                             in: 1...30,
                             step: 1
                         ) {
-                            Text(NSLocalizedString("preferences.general.time_limit_slider", comment: "Time Limit"))
+                            Text(L("preferences.general.time_limit_slider"))
                         }
                     }
                 }
@@ -672,16 +672,16 @@ struct GeneralTab: View {
 
             // Settings Management
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.general.settings_management", comment: "Settings Management"))
+                Text(L("preferences.general.settings_management"))
                     .font(.headline)
 
                 HStack(spacing: 12) {
-                    Button(NSLocalizedString("preferences.general.export_settings", comment: "Export Settings...")) {
+                    Button(L("preferences.general.export_settings")) {
                         exportSettings()
                     }
                     .buttonStyle(.bordered)
 
-                    Button(NSLocalizedString("preferences.general.import_settings", comment: "Import Settings...")) {
+                    Button(L("preferences.general.import_settings")) {
                         importSettings()
                     }
                     .buttonStyle(.bordered)
@@ -701,16 +701,16 @@ struct GeneralTab: View {
     private func exportSettings() {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.json]
-        panel.nameFieldStringValue = "\(NSLocalizedString("app.name", comment: "App name")) Settings.json"
+        panel.nameFieldStringValue = "\(L("app.name")) Settings.json"
 
         if panel.runModal() == .OK, let url = panel.url {
             do {
                 let data = try settings.exportSettings()
                 try data.write(to: url)
                 // Show success message
-                showAlert(title: NSLocalizedString("alert.success", comment: "Success"), message: NSLocalizedString("success.settings.exported", comment: "Settings exported"))
+                showAlert(title: L("alert.success"), message: L("success.settings.exported"))
             } catch {
-                showAlert(title: NSLocalizedString("alert.error", comment: "Error"), message: "Failed to export settings: \(error.localizedDescription)")
+                showAlert(title: L("alert.error"), message: "Failed to export settings: \(error.localizedDescription)")
             }
         }
     }
@@ -724,9 +724,9 @@ struct GeneralTab: View {
             do {
                 let data = try Data(contentsOf: url)
                 try settings.importSettings(from: data)
-                showAlert(title: NSLocalizedString("alert.success", comment: "Success"), message: NSLocalizedString("success.settings.imported", comment: "Settings imported"))
+                showAlert(title: L("alert.success"), message: L("success.settings.imported"))
             } catch {
-                showAlert(title: NSLocalizedString("alert.error", comment: "Error"), message: "Failed to import settings: \(error.localizedDescription)")
+                showAlert(title: L("alert.error"), message: "Failed to import settings: \(error.localizedDescription)")
             }
         }
     }
@@ -746,24 +746,24 @@ struct InsertionTab: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(NSLocalizedString("preferences.insertion.title", comment: "Text Insertion"))
+            Text(L("preferences.insertion.title"))
                 .font(.title2)
                 .fontWeight(.semibold)
 
             // Insertion Method
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.insertion.method", comment: "Insertion Method:"))
+                Text(L("preferences.insertion.method"))
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Picker(NSLocalizedString("general.method", comment: "Method"), selection: $settings.insertionMethod) {
+                    Picker(L("general.method"), selection: $settings.insertionMethod) {
                         ForEach(InsertionMethod.allCases, id: \.self) { method in
                             Text(method.displayName).tag(method)
                         }
                     }
                     .pickerStyle(.segmented)
 
-                    Text(NSLocalizedString("preferences.insertion.method_description", comment: "Insertion method description"))
+                    Text(L("preferences.insertion.method_description"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -774,13 +774,13 @@ struct InsertionTab: View {
 
             // Preview Settings
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.insertion.preview", comment: "Preview"))
+                Text(L("preferences.insertion.preview"))
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Toggle(NSLocalizedString("preferences.insertion.preview", comment: "Show preview"), isOn: $settings.showPreview)
+                    Toggle(L("preferences.insertion.preview"), isOn: $settings.showPreview)
 
-                    Text(NSLocalizedString("preferences.insertion.preview_description", comment: "Preview description"))
+                    Text(L("preferences.insertion.preview_description"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -791,14 +791,14 @@ struct InsertionTab: View {
 
             // Secure Input Information
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.insertion.secure_input_title", comment: "Secure Input Handling"))
+                Text(L("preferences.insertion.secure_input_title"))
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Image(systemName: "info.circle")
                             .foregroundColor(.blue)
-                        Text(NSLocalizedString("preferences.insertion.secure_input_description", comment: "Secure input description"))
+                        Text(L("preferences.insertion.secure_input_description"))
                             .font(.body)
                     }
                 }
@@ -818,39 +818,39 @@ struct HUDTab: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(NSLocalizedString("preferences.hud.title", comment: "Interface Settings"))
+            Text(L("preferences.hud.title"))
                 .font(.title2)
                 .fontWeight(.semibold)
 
             // HUD Appearance
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.hud.appearance", comment: "HUD Appearance"))
+                Text(L("preferences.hud.appearance"))
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text(NSLocalizedString("preferences.hud.opacity", comment: "Opacity:"))
+                            Text(L("preferences.hud.opacity"))
                             Spacer()
                             Text("\(Int(settings.hudOpacity * 100))%")
                                 .foregroundColor(.secondary)
                         }
 
                         Slider(value: $settings.hudOpacity, in: 0.3...1.0, step: 0.1) {
-                            Text(NSLocalizedString("preferences.hud.opacity_slider", comment: "HUD Opacity"))
+                            Text(L("preferences.hud.opacity_slider"))
                         }
                     }
 
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text(NSLocalizedString("preferences.hud.size", comment: "Size:"))
+                            Text(L("preferences.hud.size"))
                             Spacer()
                             Text("\(Int(settings.hudSize * 100))%")
                                 .foregroundColor(.secondary)
                         }
 
                         Slider(value: $settings.hudSize, in: 0.8...1.5, step: 0.1) {
-                            Text(NSLocalizedString("preferences.hud.size_slider", comment: "HUD Size"))
+                            Text(L("preferences.hud.size_slider"))
                         }
                     }
                 }
@@ -861,13 +861,13 @@ struct HUDTab: View {
 
             // Audio Feedback
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.hud.audio_feedback", comment: "Audio Feedback"))
+                Text(L("preferences.hud.audio_feedback"))
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Toggle(NSLocalizedString("preferences.general.sounds", comment: "Play sounds for dictation"), isOn: $settings.playSounds)
+                    Toggle(L("preferences.general.sounds"), isOn: $settings.playSounds)
 
-                    Text(NSLocalizedString("preferences.hud.sounds_description", comment: "Sounds description"))
+                    Text(L("preferences.hud.sounds_description"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -888,19 +888,19 @@ struct AdvancedTab: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(NSLocalizedString("preferences.advanced.title", comment: "Advanced Settings"))
+            Text(L("preferences.advanced.title"))
                 .font(.title2)
                 .fontWeight(.semibold)
 
             // Processing Settings
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.advanced.processing", comment: "Processing"))
+                Text(L("preferences.advanced.processing"))
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text(NSLocalizedString("preferences.advanced.threads", comment: "Processing threads:"))
+                            Text(L("preferences.advanced.threads"))
                             Spacer()
                             Text("\(settings.processingThreads)")
                                 .foregroundColor(.secondary)
@@ -914,10 +914,10 @@ struct AdvancedTab: View {
                             in: 1...8,
                             step: 1
                         ) {
-                            Text(NSLocalizedString("preferences.advanced.threads_slider", comment: "Processing Threads"))
+                            Text(L("preferences.advanced.threads_slider"))
                         }
 
-                        Text(NSLocalizedString("preferences.advanced.threads_description", comment: "Threads description"))
+                        Text(L("preferences.advanced.threads_description"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -929,13 +929,13 @@ struct AdvancedTab: View {
 
             // Logging Settings
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.advanced.logging", comment: "Logging"))
+                Text(L("preferences.advanced.logging"))
                     .font(.headline)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Toggle(NSLocalizedString("preferences.advanced.enable_logging", comment: "Enable logging"), isOn: $settings.enableLogging)
+                    Toggle(L("preferences.advanced.enable_logging"), isOn: $settings.enableLogging)
 
-                    Text(NSLocalizedString("preferences.advanced.logging_description", comment: "Logging description"))
+                    Text(L("preferences.advanced.logging_description"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -946,11 +946,11 @@ struct AdvancedTab: View {
 
             // Reset Settings
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("preferences.advanced.reset", comment: "Reset"))
+                Text(L("preferences.advanced.reset"))
                     .font(.headline)
 
                 HStack {
-                    Button(NSLocalizedString("preferences.advanced.reset_button", comment: "Reset All Settings")) {
+                    Button(L("preferences.advanced.reset_button")) {
                         showingResetAlert = true
                     }
                     .buttonStyle(.bordered)
@@ -966,13 +966,13 @@ struct AdvancedTab: View {
             Spacer()
         }
         .padding(20)
-        .alert(NSLocalizedString("preferences.advanced.reset_title", comment: "Reset Settings"), isPresented: $showingResetAlert) {
-            Button(NSLocalizedString("general.cancel", comment: "Cancel"), role: .cancel) { }
-            Button(NSLocalizedString("general.reset", comment: "Reset"), role: .destructive) {
+        .alert(L("preferences.advanced.reset_title"), isPresented: $showingResetAlert) {
+            Button(L("general.cancel"), role: .cancel) { }
+            Button(L("general.reset"), role: .destructive) {
                 resetSettings()
             }
         } message: {
-            Text(NSLocalizedString("preferences.advanced.reset_message", comment: "Reset confirmation"))
+            Text(L("preferences.advanced.reset_message"))
         }
     }
 

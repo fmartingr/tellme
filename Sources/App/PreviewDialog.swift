@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreUtils
 
 class PreviewDialogController: NSWindowController {
     private var previewView: PreviewDialogView?
@@ -13,7 +14,7 @@ class PreviewDialogController: NSWindowController {
 
         super.init(window: window)
 
-        window.title = NSLocalizedString("preview.title", comment: "Preview Transcription")
+        window.title = L("preview.title")
         window.center()
         window.level = .floating
 
@@ -54,18 +55,18 @@ struct PreviewDialogView: View {
         VStack(alignment: .leading, spacing: 16) {
             // Header
             VStack(alignment: .leading, spacing: 4) {
-                Text(NSLocalizedString("preview.title", comment: "Preview Transcription"))
+                Text(L("preview.title"))
                     .font(.title2)
                     .fontWeight(.semibold)
 
-                Text(NSLocalizedString("preview.description", comment: "Review and edit the transcribed text before insertion."))
+                Text(L("preview.description"))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
 
             // Text Editor
             VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("preview.transcribed_text", comment: "Transcribed Text:"))
+                Text(L("preview.transcribed_text"))
                     .font(.headline)
 
                 ScrollView {
@@ -85,7 +86,7 @@ struct PreviewDialogView: View {
             // Actions
             HStack {
                 // Character count
-                Text(String(format: NSLocalizedString("preview.character_count", comment: "%d characters"), text.count))
+                Text(String(format: L("preview.character_count"), text.count))
                     .font(.caption)
                     .foregroundColor(.secondary)
 
@@ -93,13 +94,13 @@ struct PreviewDialogView: View {
 
                 // Buttons
                 HStack(spacing: 12) {
-                    Button(NSLocalizedString("general.cancel", comment: "Cancel")) {
+                    Button(L("general.cancel")) {
                         onCancel()
                     }
                     .buttonStyle(.bordered)
                     .keyboardShortcut(.escape)
 
-                    Button(NSLocalizedString("preview.insert", comment: "Insert")) {
+                    Button(L("preview.insert")) {
                         onInsert(text)
                     }
                     .buttonStyle(.borderedProminent)

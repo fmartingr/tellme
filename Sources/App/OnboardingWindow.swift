@@ -2,6 +2,7 @@ import SwiftUI
 import CorePermissions
 import CoreModels
 import CoreSTT
+import CoreUtils
 
 class OnboardingWindowController: NSWindowController {
     private let permissionManager: PermissionManager
@@ -23,7 +24,7 @@ class OnboardingWindowController: NSWindowController {
 
         super.init(window: window)
 
-        window.title = NSLocalizedString("onboarding.title", comment: "Welcome to Tell me")
+        window.title = L("onboarding.title")
         window.center()
         window.level = .floating
 
@@ -65,11 +66,11 @@ struct OnboardingView: View {
                     .foregroundColor(.blue)
                     .font(.system(size: 50))
 
-                Text(NSLocalizedString("onboarding.title", comment: "Welcome to Tell me"))
+                Text(L("onboarding.title"))
                     .font(.title)
                     .fontWeight(.bold)
 
-                Text(NSLocalizedString("onboarding.subtitle", comment: "Offline speech-to-text for macOS"))
+                Text(L("onboarding.subtitle"))
                     .font(.title3)
                     .foregroundColor(.secondary)
             }
@@ -114,7 +115,7 @@ struct OnboardingView: View {
 
             // Navigation buttons (fixed at bottom)
             HStack(spacing: 12) {
-                Button(NSLocalizedString("onboarding.buttons.skip", comment: "Skip Setup")) {
+                Button(L("onboarding.buttons.skip")) {
                     onComplete()
                 }
                 .buttonStyle(.borderless)
@@ -122,7 +123,7 @@ struct OnboardingView: View {
                 .foregroundColor(.secondary)
 
                 if currentStep > 0 {
-                    Button(NSLocalizedString("onboarding.buttons.back", comment: "Back")) {
+                    Button(L("onboarding.buttons.back")) {
                         currentStep = max(0, currentStep - 1)
                     }
                     .buttonStyle(.bordered)
@@ -132,13 +133,13 @@ struct OnboardingView: View {
                 Spacer()
 
                 if currentStep < totalSteps - 1 {
-                    Button(NSLocalizedString("onboarding.buttons.next", comment: "Next")) {
+                    Button(L("onboarding.buttons.next")) {
                         currentStep = min(totalSteps - 1, currentStep + 1)
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.regular)
                 } else {
-                    Button(NSLocalizedString("onboarding.buttons.get_started", comment: "Get Started")) {
+                    Button(L("onboarding.buttons.get_started")) {
                         onComplete()
                     }
                     .buttonStyle(.borderedProminent)
@@ -157,27 +158,27 @@ struct OnboardingView: View {
 struct WelcomeStep: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(NSLocalizedString("onboarding.what_is", comment: "What is Tell me?"))
+            Text(L("onboarding.what_is"))
                 .font(.title3)
                 .fontWeight(.semibold)
 
             VStack(alignment: .leading, spacing: 16) {
                 FeatureRow(
                     icon: "mic.fill",
-                    title: NSLocalizedString("onboarding.feature.offline", comment: "Offline Speech Recognition"),
-                    description: NSLocalizedString("onboarding.feature.offline_desc", comment: "Offline description")
+                    title: L("onboarding.feature.offline"),
+                    description: L("onboarding.feature.offline_desc")
                 )
 
                 FeatureRow(
                     icon: "keyboard",
-                    title: NSLocalizedString("onboarding.feature.hotkey", comment: "Global Hotkey"),
-                    description: NSLocalizedString("onboarding.feature.hotkey_desc", comment: "Hotkey description")
+                    title: L("onboarding.feature.hotkey"),
+                    description: L("onboarding.feature.hotkey_desc")
                 )
 
                 FeatureRow(
                     icon: "lock.shield",
-                    title: NSLocalizedString("onboarding.feature.privacy", comment: "Privacy First"),
-                    description: NSLocalizedString("onboarding.feature.privacy_desc", comment: "Privacy description")
+                    title: L("onboarding.feature.privacy"),
+                    description: L("onboarding.feature.privacy_desc")
                 )
             }
         }
@@ -214,10 +215,10 @@ struct PermissionsStep: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(NSLocalizedString("onboarding.permissions.title", comment: "Permissions Required"))
+            Text(L("onboarding.permissions.title"))
                 .font(.headline)
 
-            Text(NSLocalizedString("onboarding.permissions.description", comment: "Permissions description"))
+            Text(L("onboarding.permissions.description"))
                 .font(.body)
                 .foregroundColor(.secondary)
 
@@ -327,16 +328,16 @@ struct ModelsStep: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(NSLocalizedString("onboarding.models.title", comment: "Download a Speech Model"))
+            Text(L("onboarding.models.title"))
                 .font(.headline)
 
-            Text(NSLocalizedString("onboarding.models.description", comment: "Models description"))
+            Text(L("onboarding.models.description"))
                 .font(.body)
                 .foregroundColor(.secondary)
 
             // Model recommendation
             VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("onboarding.models.recommended", comment: "Recommended: Whisper Tiny"))
+                Text(L("onboarding.models.recommended"))
                     .font(.body)
                     .fontWeight(.semibold)
 
@@ -345,7 +346,7 @@ struct ModelsStep: View {
                         Text("whisper-tiny")
                             .font(.body)
                             .fontWeight(.medium)
-                        Text(NSLocalizedString("onboarding.models.tiny_description", comment: "Tiny model description"))
+                        Text(L("onboarding.models.tiny_description"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -357,7 +358,7 @@ struct ModelsStep: View {
                             HStack {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundColor(.green)
-                                Text(NSLocalizedString("onboarding.models.downloaded", comment: "Downloaded"))
+                                Text(L("onboarding.models.downloaded"))
                                     .font(.caption)
                                     .foregroundColor(.green)
                             }
@@ -365,7 +366,7 @@ struct ModelsStep: View {
                             HStack {
                                 ProgressView()
                                     .scaleEffect(0.8)
-                                Text(NSLocalizedString("onboarding.models.downloading", comment: "Downloading..."))
+                                Text(L("onboarding.models.downloading"))
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -388,7 +389,7 @@ struct ModelsStep: View {
                 HStack {
                     Image(systemName: "exclamationmark.triangle")
                         .foregroundColor(.red)
-                    Text(String(format: NSLocalizedString("onboarding.models.download_failed", comment: "Download failed"), error))
+                    Text(String(format: L("onboarding.models.download_failed"), error))
                         .font(.caption)
                         .foregroundColor(.red)
                 }
@@ -402,7 +403,7 @@ struct ModelsStep: View {
                 HStack {
                     Image(systemName: "info.circle")
                         .foregroundColor(.blue)
-                    Text(NSLocalizedString("onboarding.models.info1", comment: "Models info 1"))
+                    Text(L("onboarding.models.info1"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -410,7 +411,7 @@ struct ModelsStep: View {
                 HStack {
                     Image(systemName: "wifi.slash")
                         .foregroundColor(.green)
-                    Text(NSLocalizedString("onboarding.models.info2", comment: "Models info 2"))
+                    Text(L("onboarding.models.info2"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -468,11 +469,11 @@ struct CompletionStep: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if hasModel {
-                Text(NSLocalizedString("onboarding.completion.ready_title", comment: "You're All Set!"))
+                Text(L("onboarding.completion.ready_title"))
                     .font(.headline)
                     .foregroundColor(.green)
 
-                Text(NSLocalizedString("onboarding.completion.ready_desc", comment: "Ready description"))
+                Text(L("onboarding.completion.ready_desc"))
                     .font(.body)
                     .foregroundColor(.secondary)
 
@@ -481,9 +482,9 @@ struct CompletionStep: View {
                         Image(systemName: "1.circle.fill")
                             .foregroundColor(.blue)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(NSLocalizedString("onboarding.completion.step1", comment: "Step 1"))
+                            Text(L("onboarding.completion.step1"))
                                 .fontWeight(.medium)
-                            Text(NSLocalizedString("onboarding.completion.step1_desc", comment: "Step 1 description"))
+                            Text(L("onboarding.completion.step1_desc"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -493,9 +494,9 @@ struct CompletionStep: View {
                         Image(systemName: "2.circle.fill")
                             .foregroundColor(.blue)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(NSLocalizedString("onboarding.completion.step2", comment: "Step 2"))
+                            Text(L("onboarding.completion.step2"))
                                 .fontWeight(.medium)
-                            Text(NSLocalizedString("onboarding.completion.step2_desc", comment: "Step 2 description"))
+                            Text(L("onboarding.completion.step2_desc"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -505,20 +506,20 @@ struct CompletionStep: View {
                         Image(systemName: "3.circle.fill")
                             .foregroundColor(.blue)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(NSLocalizedString("onboarding.completion.step3", comment: "Step 3"))
+                            Text(L("onboarding.completion.step3"))
                                 .fontWeight(.medium)
-                            Text(NSLocalizedString("onboarding.completion.step3_desc", comment: "Step 3 description"))
+                            Text(L("onboarding.completion.step3_desc"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
                 }
             } else {
-                Text(NSLocalizedString("onboarding.completion.incomplete_title", comment: "Setup Not Complete"))
+                Text(L("onboarding.completion.incomplete_title"))
                     .font(.headline)
                     .foregroundColor(.orange)
 
-                Text(NSLocalizedString("onboarding.completion.incomplete_desc", comment: "Incomplete description"))
+                Text(L("onboarding.completion.incomplete_desc"))
                     .font(.body)
                     .foregroundColor(.secondary)
 
@@ -526,7 +527,7 @@ struct CompletionStep: View {
                     HStack {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundColor(.orange)
-                        Text(NSLocalizedString("onboarding.completion.no_model_warning", comment: "No model warning"))
+                        Text(L("onboarding.completion.no_model_warning"))
                             .font(.body)
                             .fontWeight(.medium)
                     }
@@ -534,21 +535,21 @@ struct CompletionStep: View {
                     .background(Color.orange.opacity(0.1))
                     .cornerRadius(8)
 
-                    Text(NSLocalizedString("onboarding.completion.what_next", comment: "What to do next:"))
+                    Text(L("onboarding.completion.what_next"))
                         .font(.body)
                         .fontWeight(.semibold)
 
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(NSLocalizedString("onboarding.completion.next_step1", comment: "Next step 1"))
-                        Text(NSLocalizedString("onboarding.completion.next_step2", comment: "Next step 2"))
-                        Text(NSLocalizedString("onboarding.completion.next_step3", comment: "Next step 3"))
+                        Text(L("onboarding.completion.next_step1"))
+                        Text(L("onboarding.completion.next_step2"))
+                        Text(L("onboarding.completion.next_step3"))
                     }
                     .font(.body)
                     .foregroundColor(.secondary)
                 }
             }
 
-            Text(NSLocalizedString("onboarding.completion.footer", comment: "Footer text"))
+            Text(L("onboarding.completion.footer"))
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .padding(.top, 8)

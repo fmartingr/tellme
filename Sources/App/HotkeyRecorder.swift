@@ -1,6 +1,7 @@
 import SwiftUI
 import Carbon
 import CoreSettings
+import CoreUtils
 
 struct HotkeyRecorder: View {
     @Binding var hotkey: HotkeyConfig
@@ -20,7 +21,7 @@ struct HotkeyRecorder: View {
                 }) {
                     HStack {
                         if isRecording {
-                            Text(NSLocalizedString("hotkey.press_keys", comment: "Press keys..."))
+                            Text(L("hotkey.press_keys"))
                                 .foregroundColor(.primary)
                         } else {
                             Text(hotkeyDisplayString)
@@ -43,7 +44,7 @@ struct HotkeyRecorder: View {
                 }
 
                 if hotkey.keyCode != HotkeyConfig.default.keyCode || hotkey.modifiers != HotkeyConfig.default.modifiers {
-                    Button(NSLocalizedString("hotkey.reset_default", comment: "Reset to Default")) {
+                    Button(L("hotkey.reset_default")) {
                         hotkey = HotkeyConfig.default
                     }
                     .buttonStyle(.borderless)
@@ -52,7 +53,7 @@ struct HotkeyRecorder: View {
                 }
             }
 
-            Text(NSLocalizedString("hotkey.record_description", comment: "Click to record a new hotkey combination"))
+            Text(L("hotkey.record_description"))
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

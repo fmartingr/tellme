@@ -153,14 +153,14 @@ struct HUDContentView: View {
                 .font(.system(size: 32))
                 .foregroundColor(.blue)
 
-            Text(NSLocalizedString("hud.listening", comment: "Listening..."))
+            Text(L("hud.listening"))
                 .font(.headline)
                 .foregroundColor(.primary)
 
             AudioLevelView(level: level)
                 .frame(height: 20)
 
-            Text(NSLocalizedString("hud.cancel", comment: "Press Esc to cancel"))
+            Text(L("hud.cancel"))
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
@@ -172,11 +172,11 @@ struct HUDContentView: View {
             ProgressView()
                 .scaleEffect(1.2)
 
-            Text(NSLocalizedString("hud.processing", comment: "Processing..."))
+            Text(L("hud.processing"))
                 .font(.headline)
                 .foregroundColor(.primary)
 
-            Text(NSLocalizedString("hud.please_wait", comment: "Please wait"))
+            Text(L("hud.please_wait"))
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

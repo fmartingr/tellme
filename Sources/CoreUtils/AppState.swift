@@ -10,11 +10,11 @@ public enum AppState: String, CaseIterable {
     public var displayName: String {
         switch self {
         case .idle:
-            return NSLocalizedString("menubar.idle", comment: "Idle state")
+            return L("menubar.idle")
         case .listening:
-            return NSLocalizedString("menubar.listening", comment: "Listening state")
+            return L("menubar.listening")
         case .processing:
-            return NSLocalizedString("menubar.processing", comment: "Processing state")
+            return L("menubar.processing")
         case .injecting:
             return "Injecting" // Not shown in menu bar
         case .error:

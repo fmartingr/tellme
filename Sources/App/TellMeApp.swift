@@ -2,10 +2,12 @@ import SwiftUI
 import CoreUtils
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    private let appController = AppController()
+    private var appController: AppController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        appController.start()
+        _ = LocalizationManager.shared
+        appController = AppController()
+        appController?.start()
     }
 }
 

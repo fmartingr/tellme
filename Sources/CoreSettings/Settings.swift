@@ -8,9 +8,9 @@ public enum HotkeyMode: String, CaseIterable, Codable {
     public var displayName: String {
         switch self {
         case .pushToTalk:
-            return NSLocalizedString("preferences.general.mode.push_to_talk", comment: "Push to talk mode")
+            return L("preferences.general.mode.push_to_talk")
         case .toggle:
-            return NSLocalizedString("preferences.general.mode.toggle", comment: "Toggle mode")
+            return L("preferences.general.mode.toggle")
         }
     }
 }
@@ -35,9 +35,9 @@ public enum InsertionMethod: String, CaseIterable, Codable {
     public var displayName: String {
         switch self {
         case .paste:
-            return NSLocalizedString("preferences.insertion.method.paste", comment: "Paste method")
+            return L("preferences.insertion.method.paste")
         case .typing:
-            return NSLocalizedString("preferences.insertion.method.type", comment: "Type method")
+            return L("preferences.insertion.method.type")
         }
     }
 }

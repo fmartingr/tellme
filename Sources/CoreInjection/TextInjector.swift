@@ -11,9 +11,9 @@ public enum InjectionMethod: String, CaseIterable {
     public var displayName: String {
         switch self {
         case .paste:
-            return NSLocalizedString("preferences.insertion.method.paste", comment: "Paste method")
+            return L("preferences.insertion.method.paste")
         case .typing:
-            return NSLocalizedString("preferences.insertion.method.typing", comment: "Typing method")
+            return L("preferences.insertion.method.typing")
         }
     }
 }
@@ -26,9 +26,9 @@ public enum InjectionError: Error, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .secureInputActive:
-            return NSLocalizedString("preferences.insertion.secure_input.message", comment: "Secure input message")
+            return L("preferences.insertion.secure_input.message")
         case .accessibilityPermissionRequired:
-            return NSLocalizedString("permissions.accessibility.message", comment: "Accessibility permission message")
+            return L("permissions.accessibility.message")
         case .injectionFailed(let reason):
             return "Text injection failed: \(reason)"
         }

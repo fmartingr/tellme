@@ -58,10 +58,8 @@ if [ -d "$PROJECT_DIR/Sources/App/Resources" ]; then
     # Copy non-localization resources
     find "$PROJECT_DIR/Sources/App/Resources" -maxdepth 1 -type f -exec cp {} "$DEV_APP_DIR/Contents/Resources/" \;
 
-    # Copy localization files to correct location (directly in Resources, not in Localizations subfolder)
-    if [ -d "$PROJECT_DIR/Sources/App/Resources/Localizations" ]; then
-        cp -r "$PROJECT_DIR/Sources/App/Resources/Localizations/"*.lproj "$DEV_APP_DIR/Contents/Resources/" 2>/dev/null || true
-    fi
+    # Copy localization files to the Resources directory
+    find "$PROJECT_DIR/Sources/App/Resources" -maxdepth 1 -type d -name "*.lproj" -exec cp -R {} "$DEV_APP_DIR/Contents/Resources/" \; 2>/dev/null || true
 fi
 
 echo "✅ Development app bundle created at: $DEV_APP_DIR"

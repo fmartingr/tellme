@@ -100,7 +100,7 @@ public class AppController: ObservableObject {
         logger.info("Starting app controller")
 
         // Debug: Check localization
-        let testString = NSLocalizedString("preferences.title", comment: "Test")
+        let testString = L("preferences.title")
         logger.info("Localization test - preferences.title: '\(testString)'")
 
         // Setup status item menu on main actor
@@ -131,7 +131,7 @@ public class AppController: ObservableObject {
 
         // Status item
         let statusMenuItem = NSMenuItem()
-        statusMenuItem.title = NSLocalizedString("app.name", comment: "App name")
+        statusMenuItem.title = L("app.name")
         statusMenuItem.isEnabled = false
         menu.addItem(statusMenuItem)
 
@@ -139,25 +139,25 @@ public class AppController: ObservableObject {
 
         // Model status
         let modelMenuItem = NSMenuItem()
-        modelMenuItem.title = NSLocalizedString("menubar.loading_model", comment: "Loading model...")
+        modelMenuItem.title = L("menubar.loading_model")
         modelMenuItem.isEnabled = false
         menu.addItem(modelMenuItem)
 
         menu.addItem(NSMenuItem.separator())
 
         // Preferences
-        let preferencesMenuItem = NSMenuItem(title: NSLocalizedString("menubar.preferences", comment: "Preferences..."), action: #selector(openPreferences), keyEquivalent: ",")
+        let preferencesMenuItem = NSMenuItem(title: L("menubar.preferences"), action: #selector(openPreferences), keyEquivalent: ",")
         preferencesMenuItem.target = self
         menu.addItem(preferencesMenuItem)
 
         // Help
-        let helpMenuItem = NSMenuItem(title: NSLocalizedString("menubar.help", comment: "Help"), action: #selector(openHelp), keyEquivalent: "?")
+        let helpMenuItem = NSMenuItem(title: L("menubar.help"), action: #selector(openHelp), keyEquivalent: "?")
         helpMenuItem.target = self
         menu.addItem(helpMenuItem)
 
         // Debug: Reset Onboarding (only in development)
         #if DEBUG
-        let resetOnboardingMenuItem = NSMenuItem(title: NSLocalizedString("menubar.reset_onboarding", comment: "Reset Onboarding"), action: #selector(resetOnboarding), keyEquivalent: "")
+        let resetOnboardingMenuItem = NSMenuItem(title: L("menubar.reset_onboarding"), action: #selector(resetOnboarding), keyEquivalent: "")
         resetOnboardingMenuItem.target = self
         menu.addItem(resetOnboardingMenuItem)
         #endif
@@ -165,7 +165,7 @@ public class AppController: ObservableObject {
         menu.addItem(NSMenuItem.separator())
 
         // Quit
-        let quitMenuItem = NSMenuItem(title: NSLocalizedString("menubar.quit", comment: "Quit Tell me"), action: #selector(quitApp), keyEquivalent: "q")
+        let quitMenuItem = NSMenuItem(title: L("menubar.quit"), action: #selector(quitApp), keyEquivalent: "q")
         quitMenuItem.target = self
         menu.addItem(quitMenuItem)
 
@@ -211,11 +211,11 @@ public class AppController: ObservableObject {
         let modelMenuItem = menu.items[2] // Model status item
 
         if let activeModel = modelManager?.activeModel, whisperEngine.isModelLoaded() {
-            modelMenuItem.title = String(format: NSLocalizedString("menubar.model_status", comment: "Model status"), activeModel.name)
+            modelMenuItem.title = String(format: L("menubar.model_status"), activeModel.name)
         } else if modelManager?.activeModel != nil {
-            modelMenuItem.title = NSLocalizedString("menubar.model_loading", comment: "Model loading")
+            modelMenuItem.title = L("menubar.model_loading")
         } else {
-            modelMenuItem.title = NSLocalizedString("menubar.no_model", comment: "No model")
+            modelMenuItem.title = L("menubar.no_model")
         }
     }
 
@@ -626,11 +626,11 @@ public class AppController: ObservableObject {
     @MainActor
     private func showMicrophonePermissionAlert() {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("permissions.microphone.title", comment: "Microphone Access Required")
-        alert.informativeText = NSLocalizedString("permissions.microphone.message", comment: "Microphone permission message")
+        alert.messageText = L("permissions.microphone.title")
+        alert.informativeText = L("permissions.microphone.message")
         alert.alertStyle = .warning
-        alert.addButton(withTitle: NSLocalizedString("permissions.open_settings", comment: "Open System Settings"))
-        alert.addButton(withTitle: NSLocalizedString("general.cancel", comment: "Cancel"))
+        alert.addButton(withTitle: L("permissions.open_settings"))
+        alert.addButton(withTitle: L("general.cancel"))
 
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
@@ -641,11 +641,11 @@ public class AppController: ObservableObject {
     @MainActor
     private func showAccessibilityPermissionAlert() {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("permissions.accessibility.title", comment: "Accessibility Access Required")
-        alert.informativeText = NSLocalizedString("permissions.accessibility.message", comment: "Accessibility permission message")
+        alert.messageText = L("permissions.accessibility.title")
+        alert.informativeText = L("permissions.accessibility.message")
         alert.alertStyle = .warning
-        alert.addButton(withTitle: NSLocalizedString("permissions.open_settings", comment: "Open System Settings"))
-        alert.addButton(withTitle: NSLocalizedString("general.cancel", comment: "Cancel"))
+        alert.addButton(withTitle: L("permissions.open_settings"))
+        alert.addButton(withTitle: L("general.cancel"))
 
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
@@ -656,11 +656,11 @@ public class AppController: ObservableObject {
     @MainActor
     private func showInputMonitoringPermissionAlert() {
         let alert = NSAlert()
-        alert.messageText = NSLocalizedString("permissions.input_monitoring.title", comment: "Input Monitoring Required")
-        alert.informativeText = NSLocalizedString("permissions.input_monitoring.message", comment: "Input monitoring permission message")
+        alert.messageText = L("permissions.input_monitoring.title")
+        alert.informativeText = L("permissions.input_monitoring.message")
         alert.alertStyle = .warning
-        alert.addButton(withTitle: NSLocalizedString("permissions.open_settings", comment: "Open System Settings"))
-        alert.addButton(withTitle: NSLocalizedString("general.cancel", comment: "Cancel"))
+        alert.addButton(withTitle: L("permissions.open_settings"))
+        alert.addButton(withTitle: L("general.cancel"))
 
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {

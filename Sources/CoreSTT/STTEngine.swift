@@ -18,11 +18,11 @@ public enum STTError: Error, LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .modelNotFound:
-            return NSLocalizedString("error.model.not_found", comment: "Model not found error")
+            return L("error.model.not_found")
         case .modelLoadFailed(let reason):
-            return NSLocalizedString("error.model.load_failed", comment: "Model load failed error") + ": \(reason)"
+            return L("error.model.load_failed") + ": \(reason)"
         case .transcriptionFailed(let reason):
-            return NSLocalizedString("error.transcription.failed", comment: "Transcription failed error") + ": \(reason)"
+            return L("error.transcription.failed") + ": \(reason)"
         case .unsupportedFormat:
             return "Unsupported audio format"
         case .invalidAudioData:

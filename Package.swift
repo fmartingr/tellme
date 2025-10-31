@@ -3,6 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "TellMe",
+    defaultLocalization: "en",
     platforms: [
         .macOS(.v13)
     ],
@@ -30,7 +31,9 @@ let package = Package(
             ],
             path: "Sources/App",
             resources: [
-                .copy("Resources")
+                .process("Resources/en.lproj"),
+                .process("Resources/es.lproj"),
+                .copy("Resources/model-catalog.json")
             ]
         ),
 

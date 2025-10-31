@@ -10,9 +10,9 @@ public enum HotkeyMode: String, CaseIterable {
     public var displayName: String {
         switch self {
         case .pushToTalk:
-            return NSLocalizedString("hotkey.mode.push", comment: "Push-to-talk mode")
+            return L("hotkey.mode.push")
         case .toggle:
-            return NSLocalizedString("hotkey.mode.toggle", comment: "Toggle mode")
+            return L("hotkey.mode.toggle")
         }
     }
 }
